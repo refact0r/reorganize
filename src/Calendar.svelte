@@ -64,7 +64,7 @@
     #calendar {
         display: grid;
         grid-template-rows: auto repeat(6, 1fr);
-        height: 100vh;
+        height: 90vh;
     }
 
     .calendar-header, .calendar-week {
@@ -91,7 +91,7 @@
     }
 
     .calendar-day, .calendar-header-day {
-        font-size: 1.3em;
+        font-size: 1.2em;
     }
 
     .calendar-day {
@@ -112,62 +112,12 @@
 
 <div id="container">
     <h2 id="page-title">calendar</h2>
-    <!-- <div id="calendar">
-        <div class="calendar-header">
-            <div>mon</div>
-            <div>tue</div>
-            <div>wed</div>
-            <div>thu</div>
-            <div>fri</div>
-            <div>sat</div>
-            <div>sun</div>
-        </div>
-        <div class="calendar-week">
-            <div class="calendar-day">1</div>
-            <div class="calendar-day">2</div>
-            <div class="calendar-day">3</div>
-            <div class="calendar-day">4</div>
-            <div class="calendar-day">5</div>
-            <div class="calendar-day">6</div>
-            <div class="calendar-day">7</div>
-        </div>
-        <div class="calendar-week">
-            <div class="calendar-day">8</div>
-            <div class="calendar-day">9</div>
-            <div class="calendar-day">10</div>
-            <div class="calendar-day">11</div>
-            <div class="calendar-day">12</div>
-            <div class="calendar-day">13</div>
-            <div class="calendar-day">14</div>        
-        </div>
-        <div class="calendar-week">
-            <div class="calendar-day">15</div>
-            <div class="calendar-day">16</div>
-            <div class="calendar-day">17</div>
-            <div class="calendar-day">18</div>
-            <div class="calendar-day">19</div>
-            <div class="calendar-day">20</div>
-            <div class="calendar-day">21</div>    
-        </div>
-        <div class="calendar-week">
-            <div class="calendar-day">22</div>
-            <div class="calendar-day">23</div>
-            <div class="calendar-day">24</div>
-            <div class="calendar-day">25</div>
-            <div class="calendar-day">26</div> 
-            <div class="calendar-day">27</div> 
-            <div class="calendar-day">28</div> 
-        </div>
-        <div class="calendar-week">
-            <div class="calendar-day">29</div>
-            <div class="calendar-day">30</div>
-            <div class="calendar-day">31</div>
-            <div class="calendar-day">1</div>
-            <div class="calendar-day">2</div>
-            <div class="calendar-day">3</div>
-            <div class="calendar-day">4</div>
-        </div>
-    </div> -->
+
+    <h2>{months[month]}</h2>
+
+    <button><i class="bi bi-chevron-left"></i></button>
+    <button><i class="bi bi-chevron-right"></i></button>
+
     <div id="calendar">
         <div class="calendar-header">
             {#each labels as label, l}
