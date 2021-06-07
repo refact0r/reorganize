@@ -1,0 +1,47 @@
+<script>
+</script>
+
+<svelte:head>
+    <title>reorganize: profile</title>
+</svelte:head>
+
+<style>
+    #container {
+        padding: 2rem 3rem;
+    }
+    
+    #page-title {
+        margin: 0 0 2rem 0;
+    }
+    
+    .task {
+        display: flex;
+        padding: 0.7rem 1rem;
+        backdrop-filter: blur(10px);
+        background: var(--glass-bg-color);
+        border: var(--glass-border);
+        border-radius: 0.6rem;
+        margin-bottom: 0.4rem;
+        align-items: center;
+        box-shadow: var(--box-shadow);
+    }
+    
+    .complete {
+        background: none;
+        margin: 0 1rem 0 0;
+        padding: 0;
+        width: 1.4rem;
+        height: 1.4rem;
+        border-radius: 2rem;
+        border: 2px solid var(--sub-color);
+    }
+</style>
+
+<div id="container">
+    <h2 id="page-title">profile</h2>
+    <div class="task"><button class="complete"></button>some task</div>
+    <div class="task"><button class="complete"></button>some task</div>
+    <div class="task"><button class="complete"></button>some task</div>
+    <div class="task"><button class="complete"></button>some task</div>
+    <div class="task"><button class="complete"></button>some task</div>
+</div>

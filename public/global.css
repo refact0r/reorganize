@@ -1,0 +1,41 @@
+* {
+	--font-color: hsl(0, 0%, 100%, 0.9);
+	--sub-color: hsla(0, 0%, 100%, 0.4);
+	--glass-bg-color: hsla(0, 0%, 100%, 0.1);
+	--glass-border: 1px solid hsla(0, 0%, 100%, 0); 
+	--box-shadow: 0.2rem 0.2rem 0.4rem hsla(0, 0%, 0%, 0.2);
+	--background-filter: brightness(0.8) contrast(0.9);
+	--background: url("/leaves.jpg");
+	/* --font-color: hsl(0, 0%, 100%, 0.9);
+	--sub-color: hsla(0, 0%, 100%, 0.4);
+	--glass-bg-color: hsla(0, 0%, 0%, 0.5);
+	--glass-border: 1px solid hsla(0, 0%, 100%, 0); 
+	--box-shadow: 0.2rem 0.2rem 0.4rem hsla(0, 0%, 0%, 0.2);
+	--background: url("https://4kwallpapers.com/images/wallpapers/mountains-blue-sky-mountain-range-fog-peak-3840x2160-5364.jpg");
+	--background-filter: brightness(1) contrast(0.9); */
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+}
+
+a {
+	text-decoration: none;
+	color: inherit;
+}
+
+button {
+	background: none;
+	font: inherit;
+	color: inherit;
+	border: none;
+}
+
+button:hover {
+	cursor: pointer;
+}
+
+button:focus {
+	outline: none;
+}
