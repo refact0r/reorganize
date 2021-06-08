@@ -1,6 +1,7 @@
 {
-  "name": "svelte-app",
-  "version": "1.0.0",
+  "name": "reorganize",
+  "version": "0.1.0",
+  "description": "a planner app",
   "private": true,
   "scripts": {
     "build": "rollup -c",
