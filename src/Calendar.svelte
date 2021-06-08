@@ -76,7 +76,7 @@
     #calendar {
         display: grid;
         grid-template-rows: auto repeat(6, 1fr);
-        height: 90vh;
+        height: 80vh;
     }
 
     .calendar-header, .calendar-week {
@@ -127,8 +127,8 @@
 
     <h2>{months[month]} {year}</h2>
 
-    <button><i class="bi bi-chevron-left"></i></button>
-    <button><i class="bi bi-chevron-right"></i></button>
+    <button on:click={() => prevMonth()}><i class="bi bi-chevron-left"></i></button>
+    <button on:click={() => nextMonth()}><i class="bi bi-chevron-right"></i></button>
 
     <div id="calendar">
         <div class="calendar-header">
