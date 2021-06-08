@@ -242,10 +242,6 @@
 		height: 2px;
 		background: var(--sub-color);
 	}
-	
-	#page {
-		z-index: 5;
-	}
 </style>
 
 <main>
@@ -300,7 +296,5 @@
 		</button>
 	</div>
 	
-	<div id="page">
-		<svelte:component this={selected} list={lists[selectedList]}/>
-	</div>
+	<svelte:component this={selected} list={lists[selectedList]}/>
 </main>
