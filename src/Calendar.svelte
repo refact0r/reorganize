@@ -125,7 +125,7 @@
 <div id="container">
     <h2 id="page-title">calendar</h2>
 
-    <h2>{months[month]}</h2>
+    <h2>{months[month]} {year}</h2>
 
     <button><i class="bi bi-chevron-left"></i></button>
     <button><i class="bi bi-chevron-right"></i></button>
