@@ -226,18 +226,21 @@
 
 	hr {
 		width: 100%;
-		height: 0;
-		margin: 1rem 0rem;
+		height: 2rem;
+		margin: 0;
 		border: none;
+		display: flex;
+		justify-content: center;
+		align-items: center;
 	}
 
 	hr::after {
 		content: "";
 		display: block;
 		width: 80%;
-		margin: auto;
-		border-top: 2px solid var(--sub-color);	
 		border-radius: 1rem;
+		height: 2px;
+		background: var(--sub-color);
 	}
 	
 	#page {
