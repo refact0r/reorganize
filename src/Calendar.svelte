@@ -43,20 +43,20 @@
     $: next = generateCalendar(new Date(year, month + 1));
     
     function nextMonth() {
-	    month += 1;
-		if (month >= 12) {
-			year += 1;
-			month = 0;
-		}
+        month += 1;
+        if (month >= 12) {
+            year += 1;
+            month = 0;
+        }
     }
-	
-	function prevMonth() {
-		month -= 1;
-		if (month < 0) {
-			year -= 1;
-			month = 11;
-		}
-	}
+
+    function prevMonth() {
+        month -= 1;
+        if (month < 0) {
+            year -= 1;
+            month = 11;
+        }
+    }
 	
 </script>
 
