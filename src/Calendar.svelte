@@ -2,8 +2,8 @@
 
     let offset = 1;
     let labels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-	let months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-	let months_short = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    let months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    let months_short = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
     function generateCalendar(date) {
         var year = date.getFullYear();
@@ -38,14 +38,26 @@
     let year = 2021;
     let month = 5;
 
-    let prev = generateCalendar(new Date(year, month - 1));
-	let current = generateCalendar(new Date(year, month));
-	let next = generateCalendar(new Date(year, month + 1));
+    $: prev = generateCalendar(new Date(year, month - 1));
+    $: current = generateCalendar(new Date(year, month));
+    $: next = generateCalendar(new Date(year, month + 1));
     
-    console.log(prev);
-    console.log(current);
-    console.log(next);
-    
+    function nextMonth() {
+	    month += 1;
+		if (month >= 12) {
+			year += 1;
+			month = 0;
+		}
+    }
+	
+	function prevMonth() {
+		month -= 1;
+		if (month < 0) {
+			year -= 1;
+			month = 11;
+		}
+	}
+	
 </script>
 
 <svelte:head>
