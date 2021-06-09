@@ -123,7 +123,7 @@
 
     .calendar-day {
         height: 100%;
-        padding: 1rem;
+        padding: 0.5rem 1rem;
     }
 
     .other {
