@@ -66,7 +66,7 @@
 
 <style>
     #page {
-        padding: 2rem 3rem 3rem 3rem;
+        padding: 3rem;
         height: 100vh;
         z-index: 5;
         display: flex;
@@ -81,13 +81,13 @@
         display: grid;
         grid-template-rows: auto repeat(6, 1fr);
         height: 100%;
+	row-gap: 0.4rem;
     }
 
     .calendar-header, .calendar-week {
         display: grid;
         background: var(--glass-bg-color);
         backdrop-filter: var(--blur);
-        margin: 0.3rem 0;
         border: var(--glass-border);
         border-radius: 0.6rem;
         box-shadow: var(--box-shadow);
@@ -96,12 +96,12 @@
 
     .calendar-title-container {
         display: flex;
-        margin: 0.5rem 0;
+        margin-bottom: 0.5rem;
     }
 
     .calendar-title {
         margin: auto;
-        font-size: 1.7em;
+        font-size: 1.6em;
     }
 
     .calendar-header {
@@ -109,7 +109,7 @@
         grid-template-rows: auto auto;
         justify-content: center;
         text-align: center;
-        padding: 0.5rem;
+        padding: 0.3rem;
         height: min-content;
     }
 
