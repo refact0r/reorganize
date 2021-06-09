@@ -66,7 +66,7 @@
 
 <style>
     #page {
-        padding: 3rem;
+        padding: 2rem 3rem 3rem 3rem;
         height: 100vh;
         z-index: 5;
         display: flex;
