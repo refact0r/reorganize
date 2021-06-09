@@ -81,7 +81,7 @@
         display: grid;
         grid-template-rows: auto repeat(6, 1fr);
         height: 100%;
-	row-gap: 0.4rem;
+	    row-gap: 0.4rem;
     }
 
     .calendar-header, .calendar-week {
@@ -101,7 +101,6 @@
 
     .calendar-title {
         margin: auto;
-        font-size: 1.6em;
     }
 
     .calendar-header {
@@ -130,10 +129,17 @@
         color:hsla(0, 0%, 100%, 0.3)
     }
 
+    .vl-container {
+        width: 2px;
+        height: 100%;
+        padding: 0.8rem 0;
+    }
+
     .vl {
         width: 2px;
         background: hsla(0, 0%, 100%, 0.1);
-        height: 70%;
+        height: 100%;
+        
     }
 </style>
 
@@ -156,7 +162,9 @@
             <div class="calendar-week">
                 {#each {length: 7} as _, d}
                     {#if d !== 0}
-                        <div class="vl"></div>
+                        <div class="vl-container">
+                            <div class="vl"></div>
+                        </div>
                     {/if}
                     {#if current[w]}
                         {#if current[w][d] !== 0}
