@@ -152,18 +152,22 @@
                 <div class="calendar-header-day">{labels[(l + offset) % 7]}</div>
             {/each}
         </div>
-        {#each current as week, w}
+        {#each {length : 6} as _, w}
             <div class="calendar-week">
-                {#each week as day, d}
+                {#each {length: 7} as _, d}
                     {#if d !== 0}
                         <div class="vl"></div>
                     {/if}
-                    {#if day !== 0}
-                        <div class="calendar-day">{day}</div>
-                    {:else if w < 1}
-                        <div class="calendar-day other">{prev[prev.length - 1][d]}</div>
+                    {#if current[w]}
+                        {#if current[w][d] !== 0}
+                            <div class="calendar-day">{current[w][d]}</div>
+                        {:else if w < 1}
+                            <div class="calendar-day other">{prev[prev.length - 1][d]}</div>
+                        {:else}
+                            <div class="calendar-day other">{next[0][d]}</div>
+                        {/if}
                     {:else}
-                        <div class="calendar-day other">{next[0][d]}</div>
+                        <div class="calendar-day other">{next[1][d]}</div>
                     {/if}
                 {/each}
             </div>
