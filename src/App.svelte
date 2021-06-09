@@ -97,7 +97,7 @@
 		display: flex;
 		flex-direction: column;
 		height: 100vh;
-		backdrop-filter: blur(30px);
+		backdrop-filter: var(--blur);
 		background: var(--glass-bg-color);
 		border-right: var(--glass-border);
 		box-shadow: var(--box-shadow);
