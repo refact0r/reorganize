@@ -101,7 +101,6 @@
 		background: var(--glass-bg-color);
 		border-right: var(--glass-border);
 		box-shadow: var(--box-shadow);
-		font-size: 1.1em;
 		z-index: 10;
 	}
 
@@ -147,7 +146,7 @@
 		display: block;
 		position: absolute;
 		background: var(--font-color);
-		top: 6.2rem;
+		top: 6rem;
 		left: 1.2rem;
 		width: 2px;
 		height: 1.6rem;
@@ -219,7 +218,6 @@
 	}
 	
 	#title {
-		font-size: 1.5em;
 		padding: 2rem 2rem 1rem 2rem;
 		margin: 0;
 	}
@@ -248,7 +246,7 @@
 	<div id="sidebar">
 		<div id="sidebar-inner">
 			<div id="sidebar-inner2">
-			<h1 id="title">reorganize</h1>
+			<h2 id="title">reorganize</h2>
 
 			<button class="sidebar-button {selected === Profile ? 'active' : ''}" on:click={() => (selected = Profile)}>
 				<div class="sidebar-icon-container"><i class="bi bi-person"></i></div>
