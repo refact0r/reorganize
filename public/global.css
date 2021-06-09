@@ -1,10 +1,11 @@
 * {
 	--font-color: hsl(0, 0%, 100%, 0.9);
-	--sub-color: hsla(0, 0%, 100%, 0.4);
+	--sub-color: hsla(0, 0%, 100%, 0.3);
 	--glass-bg-color: hsla(0, 0%, 100%, 0.1);
 	--glass-border: 1px solid hsla(0, 0%, 100%, 0); 
 	--box-shadow: 0.2rem 0.2rem 0.4rem hsla(0, 0%, 0%, 0.2);
-	--background-filter: brightness(0.8) contrast(0.9);
+	--blur: blur(15px);
+	--background-filter: brightness(0.6) contrast(0.9) saturate(1.2);
 	--background: url("/leaves.jpg");
 	/* --font-color: hsl(0, 0%, 100%, 0.9);
 	--sub-color: hsla(0, 0%, 100%, 0.4);

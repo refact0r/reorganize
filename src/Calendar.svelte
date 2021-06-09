@@ -65,26 +65,28 @@
 </svelte:head>
 
 <style>
-    #container {
-        padding: 2rem 3rem;
-	height: 100vh;
-	z-index: 5;
+    #page {
+        padding: 2rem 3rem 3rem 3rem;
+        height: 100vh;
+        z-index: 5;
+        display: flex;
+        flex-direction: column;
     }
     
     #page-title {
-        margin: 0 0 2rem 0;
+        margin: 0;
     }
 
     #calendar {
         display: grid;
         grid-template-rows: auto repeat(6, 1fr);
-        height: 80vh;
+        height: 100%;
     }
 
     .calendar-header, .calendar-week {
         display: grid;
         background: var(--glass-bg-color);
-        backdrop-filter: blur(30px);
+        backdrop-filter: var(--blur);
         margin: 0.3rem 0;
         border: var(--glass-border);
         border-radius: 0.6rem;
@@ -92,8 +94,19 @@
         align-items: center;
     }
 
+    .calendar-title-container {
+        display: flex;
+        margin: 0.5rem 0;
+    }
+
+    .calendar-title {
+        margin: auto;
+        font-size: 1.7em;
+    }
+
     .calendar-header {
         grid-template-columns: repeat(7, 1fr);
+        grid-template-rows: auto auto;
         justify-content: center;
         text-align: center;
         padding: 0.5rem;
@@ -105,7 +118,7 @@
     }
 
     .calendar-day, .calendar-header-day {
-        font-size: 1.2em;
+        font-size: 1.1em;
     }
 
     .calendar-day {
@@ -124,13 +137,14 @@
     }
 </style>
 
-<div id="container">
+<div id="page">
     <h2 id="page-title">calendar</h2>
 
-    <h2>{months[month]} {year}</h2>
-
-    <button on:click={() => prevMonth()}><i class="bi bi-chevron-left"></i></button>
-    <button on:click={() => nextMonth()}><i class="bi bi-chevron-right"></i></button>
+    <div class="calendar-title-container">
+        <h2 class="calendar-title">{months[month]} {year}</h2>
+        <button on:click={() => prevMonth()}><i class="bi bi-chevron-left"></i></button>
+        <button on:click={() => nextMonth()}><i class="bi bi-chevron-right"></i></button>
+    </div>
 
     <div id="calendar">
         <div class="calendar-header">
