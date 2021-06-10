@@ -1,5 +1,4 @@
 <script>
-
     let offset = 1;
     let labels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     let months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -35,10 +34,13 @@
         return out;
     }
 
-    let year = 2021;
-    let month = 5;
+	let view = "month";
 
-    $: prev = generateCalendar(new Date(year, month - 1));
+	let date = new Date();
+    let year = date.getFullYear();
+    let month = date.getMonth();
+
+    $: prev = generateCalendar(new Date(year, month - 1)); 
     $: current = generateCalendar(new Date(year, month));
     $: next = generateCalendar(new Date(year, month + 1));
     
@@ -72,10 +74,6 @@
         display: flex;
         flex-direction: column;
     }
-    
-    #page-title {
-        margin: 0;
-    }
 
     #calendar {
         display: grid;
@@ -96,12 +94,55 @@
 
     .calendar-title-container {
         display: flex;
-        margin-bottom: 0.5rem;
+		align-items: center;
+        margin-bottom: 1rem;
     }
 
     .calendar-title {
         margin: auto;
     }
+
+	.calendar-button {
+		border-radius: 1rem;
+		width: 2rem;
+		height: 2rem;
+		text-align: center;
+		padding: 0;
+		transition: transform 0.05s ease-out;
+	}
+
+	.calendar-button:hover {
+		background: hsla(0, 0%, 100%, 0.1);
+	}
+
+	.calendar-button:active {
+		transform: scale(0.95);
+	}
+
+	.bi {
+		font-size: 1.2em;
+	}
+
+	.bi-chevron-left {
+		margin-right: 0.2rem;
+	}
+	
+	.bi-chevron-right {
+		margin-left: 0.2rem;
+	}
+
+	.calendar-slider {
+		display: flex;
+		font-size: 1.1em;
+		background: var(--glass-bg-color);
+		backdrop-filter: var(--blur);
+		border-radius: 0.6rem;
+		padding: 0.3rem 0;
+	}
+
+	.calendar-slider-button {
+		width: 5rem;
+	}
 
     .calendar-header {
         grid-template-columns: repeat(7, 1fr);
@@ -141,15 +182,39 @@
         height: 100%;
         
     }
+
+	#indicator {
+		content: "";
+		display: block;
+		position: absolute;
+		background: var(--glass-bg-color);
+		top: 5%;
+		left: .1rem;
+		width: 4.8rem;
+		height: 90%;
+		border-radius: 0.5rem;
+		transition: 0.2s ease-out;
+	}
+
+	.calendar-slider-button:nth-child(2).active ~ #indicator {
+		transform: translateX(5rem);
+	}
+
+	.calendar-slider-button:nth-child(3).active ~ #indicator {
+		transform: translateX(10.6rem);
+	}
 </style>
 
 <div id="page">
-    <h2 id="page-title">calendar</h2>
-
     <div class="calendar-title-container">
+		<div class="calendar-slider">
+			<button class="calendar-slider-button {view === "week" ? 'active' : ''}" on:click={() => (view = "week")}>week</button>
+			<button class="calendar-slider-button {view === "month" ? 'active' : ''}" on:click={() => (view = "month")}>month</button>
+			<div id="indicator"></div>
+		</div>
         <h2 class="calendar-title">{months[month]} {year}</h2>
-        <button on:click={() => prevMonth()}><i class="bi bi-chevron-left"></i></button>
-        <button on:click={() => nextMonth()}><i class="bi bi-chevron-right"></i></button>
+        <button class="calendar-button" on:click={() => prevMonth()}><i class="bi bi-chevron-left"></i></button>
+        <button class="calendar-button" on:click={() => nextMonth()}><i class="bi bi-chevron-right"></i></button>
     </div>
 
     <div id="calendar">

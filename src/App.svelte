@@ -126,7 +126,7 @@
 		width: 100%;
 		height: 3rem;
 		align-items: center;
-		transition: 0.1s ease-out;
+		transition: 0.05s ease-out;
 	}
 	
 	.sidebar-button:hover {
