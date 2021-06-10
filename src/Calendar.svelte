@@ -101,6 +101,11 @@
     .calendar-title {
         margin: auto;
     }
+    
+    .calendar-button-container {
+        width: 10rem;
+        text-align: right;
+    }
 
 	.calendar-button {
 		border-radius: 1rem;
@@ -213,8 +218,10 @@
 			<div id="indicator"></div>
 		</div>
         <h2 class="calendar-title">{months[month]} {year}</h2>
-        <button class="calendar-button" on:click={() => prevMonth()}><i class="bi bi-chevron-left"></i></button>
-        <button class="calendar-button" on:click={() => nextMonth()}><i class="bi bi-chevron-right"></i></button>
+        <div class="calendar-button-container">
+            <button class="calendar-button" on:click={() => prevMonth()}><i class="bi bi-chevron-left"></i></button>
+            <button class="calendar-button" on:click={() => nextMonth()}><i class="bi bi-chevron-right"></i></button>
+        </div>
     </div>
 
     <div id="calendar">
