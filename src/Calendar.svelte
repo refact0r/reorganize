@@ -142,11 +142,21 @@
 		background: var(--glass-bg-color);
 		backdrop-filter: var(--blur);
 		border-radius: 0.6rem;
-		padding: 0.3rem 0;
+		padding: 0.2rem 0;
+		height: 2.4rem;
+		position: relative;
 	}
 
 	.calendar-slider-button {
 		width: 5rem;
+	}
+
+	.calendar-slider-button.active {
+		font-weight: 500;
+	}
+
+	.calendar-slider-button:active {
+		transform: scale(0.95);
 	}
 
     .calendar-header {
@@ -168,12 +178,23 @@
 
     .calendar-day {
         height: 100%;
-        padding: 0.5rem 1rem;
+        padding: 0.5rem;
     }
 
     .other {
-        color:hsla(0, 0%, 100%, 0.3)
+        color: hsla(0, 0%, 100%, 0.3);
     }
+
+	.calendar-day-text {
+		width: 2rem;
+		height: 2rem;
+		text-align: center;
+		border-radius: 2rem;
+	}
+
+	.calendar-day.today .calendar-day-text {
+		border: 2px solid var(--font-color);
+	}
 
     .vl-container {
         width: 2px;
@@ -193,10 +214,10 @@
 		display: block;
 		position: absolute;
 		background: var(--glass-bg-color);
-		top: 5%;
-		left: .1rem;
-		width: 4.8rem;
-		height: 90%;
+		top: 0.2rem;
+		left: 0.2rem;
+		width: 4.6rem;
+		height: 2rem;
 		border-radius: 0.5rem;
 		transition: 0.2s ease-out;
 	}
@@ -206,7 +227,7 @@
 	}
 
 	.calendar-slider-button:nth-child(3).active ~ #indicator {
-		transform: translateX(10.6rem);
+		transform: translateX(10rem);
 	}
 </style>
 
@@ -239,15 +260,27 @@
                         </div>
                     {/if}
                     {#if current[w]}
-                        {#if current[w][d] !== 0}
-                            <div class="calendar-day">{current[w][d]}</div>
+                        {#if current[w][d] === date.getDate() && month === date.getMonth()}
+							<div class="calendar-day today">
+								<div class="calendar-day-text">{current[w][d]}</div>
+							</div>
+						{:else if current[w][d] !== 0}
+                            <div class="calendar-day">
+								<div class="calendar-day-text">{current[w][d]}</div>
+							</div>
                         {:else if w < 1}
-                            <div class="calendar-day other">{prev[prev.length - 1][d]}</div>
+                            <div class="calendar-day other">
+								<div class="calendar-day-text">{prev[prev.length - 1][d]}</div>
+							</div>
                         {:else}
-                            <div class="calendar-day other">{next[0][d]}</div>
+                            <div class="calendar-day other">
+								<div class="calendar-day-text">{next[0][d]}</div>
+							</div>
                         {/if}
                     {:else}
-                        <div class="calendar-day other">{next[1][d]}</div>
+						<div class="calendar-day other">
+							<div class="calendar-day-text">{next[1][d]}</div>
+						</div>
                     {/if}
                 {/each}
             </div>
