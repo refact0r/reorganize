@@ -79,17 +79,7 @@
         display: grid;
         grid-template-rows: auto repeat(6, 1fr);
         height: 100%;
-	    row-gap: 0.4rem;
-    }
-
-    .calendar-header, .calendar-week {
-        display: grid;
-        background: var(--glass-bg-color);
-        backdrop-filter: var(--blur);
-        border: var(--glass-border);
-        border-radius: 0.6rem;
-        box-shadow: var(--box-shadow);
-        align-items: center;
+	    row-gap: 0.3rem;
     }
 
     .calendar-title-container {
@@ -160,6 +150,8 @@
 	}
 
     .calendar-header {
+        display: grid;
+        align-items: center;
         grid-template-columns: repeat(7, 1fr);
         grid-template-rows: auto auto;
         justify-content: center;
@@ -168,8 +160,18 @@
         height: min-content;
     }
 
-    .calendar-week {
-        grid-template-columns: 1fr repeat(6, auto 1fr);
+	.calendar-header, .calendar-day {
+		background: var(--glass-bg-color);
+        backdrop-filter: var(--blur);
+        border: var(--glass-border);
+        border-radius: 0.6rem;
+        box-shadow: var(--box-shadow);
+	}
+
+	.calendar-week {
+		display: grid;
+        grid-template-columns: repeat(7, 1fr);
+		column-gap: 0.3rem;
     }
 
     .calendar-day, .calendar-header-day {
@@ -181,34 +183,21 @@
         padding: 0.3rem;
     }
 
-    .other {
-        color: hsla(0, 0%, 100%, 0.3);
-    }
-
 	.calendar-day-text {
 		width: 2rem;
 		height: 2rem;
-        line-height: 2rem;
+		line-height: 2rem;
 		text-align: center;
 		border-radius: 2rem;
 	}
 
+    .other {
+        color: hsla(0, 0%, 100%, 0.3);
+    }
+
 	.calendar-day.today .calendar-day-text {
-        background: var(--glass-bg-color);
+        background: hsla(0, 0%, 100%, 0.2);
 	}
-
-    .vl-container {
-        width: 2px;
-        height: 100%;
-        padding: 0.8rem 0;
-    }
-
-    .vl {
-        width: 2px;
-        background: hsla(0, 0%, 100%, 0.1);
-        height: 100%;
-        
-    }
 
 	#indicator {
 		content: "";
@@ -252,39 +241,38 @@
                 <div class="calendar-header-day">{labels[(l + offset) % 7]}</div>
             {/each}
         </div>
-        {#each {length : 6} as _, w}
-            <div class="calendar-week">
-                {#each {length: 7} as _, d}
-                    {#if d !== 0}
-                        <div class="vl-container">
-                            <div class="vl"></div>
-                        </div>
-                    {/if}
-                    {#if current[w]}
-                        {#if current[w][d] === date.getDate() && month === date.getMonth()}
-							<div class="calendar-day today">
-								<div class="calendar-day-text">{current[w][d]}</div>
+		{#if view === "month"}
+			{#each {length : 6} as _, w}
+				<div class="calendar-week">
+					{#each {length: 7} as _, d}
+						{#if current[w]}
+							{#if current[w][d] === date.getDate() && month === date.getMonth()}
+								<div class="calendar-day today">
+									<div class="calendar-day-text">{current[w][d]}</div>
+								</div>
+							{:else if current[w][d] !== 0}
+								<div class="calendar-day">
+									<div class="calendar-day-text">{current[w][d]}</div>
+								</div>
+							{:else if w < 1}
+								<div class="calendar-day other">
+									<div class="calendar-day-text">{prev[prev.length - 1][d]}</div>
+								</div>
+							{:else}
+								<div class="calendar-day other">
+									<div class="calendar-day-text">{next[0][d]}</div>
+								</div>
+							{/if}
+						{:else}
+							<div class="calendar-day other">
+								<div class="calendar-day-text">{next[1][d]}</div>
 							</div>
-						{:else if current[w][d] !== 0}
-                            <div class="calendar-day">
-								<div class="calendar-day-text">{current[w][d]}</div>
-							</div>
-                        {:else if w < 1}
-                            <div class="calendar-day other">
-								<div class="calendar-day-text">{prev[prev.length - 1][d]}</div>
-							</div>
-                        {:else}
-                            <div class="calendar-day other">
-								<div class="calendar-day-text">{next[0][d]}</div>
-							</div>
-                        {/if}
-                    {:else}
-						<div class="calendar-day other">
-							<div class="calendar-day-text">{next[1][d]}</div>
-						</div>
-                    {/if}
-                {/each}
-            </div>
-        {/each}
+						{/if}
+					{/each}
+				</div>
+			{/each}
+		{:else if view === "week"}
+			week view
+		{/if}
     </div>
 </div>
