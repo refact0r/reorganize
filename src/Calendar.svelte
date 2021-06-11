@@ -178,7 +178,7 @@
 
     .calendar-day {
         height: 100%;
-        padding: 0.5rem;
+        padding: 0.3rem;
     }
 
     .other {
@@ -188,12 +188,13 @@
 	.calendar-day-text {
 		width: 2rem;
 		height: 2rem;
+        line-height: 2rem;
 		text-align: center;
 		border-radius: 2rem;
 	}
 
 	.calendar-day.today .calendar-day-text {
-		border: 2px solid var(--font-color);
+        background: var(--glass-bg-color);
 	}
 
     .vl-container {
