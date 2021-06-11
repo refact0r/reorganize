@@ -23,7 +23,7 @@
         background: var(--glass-bg-color);
         border: var(--glass-border);
         border-radius: 0.6rem;
-        margin-bottom: 0.4rem;
+        margin-bottom: 0.3rem;
         align-items: center;
         box-shadow: var(--box-shadow);
     }
