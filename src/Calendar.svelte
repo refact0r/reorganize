@@ -248,6 +248,7 @@
 		border-radius: 0.6rem;
 		width: 5rem;
 		margin-right: 0.4rem;
+		transition: transform 0.05s ease-out;
 	}
 
 	.calendar-slider-button.active {
