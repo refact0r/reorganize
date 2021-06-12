@@ -186,7 +186,6 @@
 	.calendar-button {
 		font-size: 1.1em;
 		width: 5rem;
-		height: 2rem;
 		margin: 0 1rem;
 		border-radius: 0.6rem;
 		padding: 0 0.4rem;
@@ -196,6 +195,7 @@
     
     .calendar-button-container {
 		display: flex;
+		align-items: center;
     }
 
 	.calendar-icon-button {
