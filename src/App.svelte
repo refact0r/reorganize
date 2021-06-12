@@ -35,7 +35,7 @@
 	let css = "";
 	let child = 10;
 	let translate = 22;
-	let style = document.createElement('style');
+	let style = document.createElement("style");
 	document.head.appendChild(style);
 
 	//add initial indicator styles
@@ -248,30 +248,30 @@
 			<div id="sidebar-inner2">
 			<h2 id="title">reorganize</h2>
 
-			<button class="sidebar-button {selected === Profile ? 'active' : ''}" on:click={() => (selected = Profile)}>
+			<button class="sidebar-button {selected === Profile ? "active" : ""}" on:click={() => (selected = Profile)}>
 				<div class="sidebar-icon-container"><i class="bi bi-person"></i></div>
 				username
 			</button>
 
 			<hr>
 
-			<button class="sidebar-button {selected === Home ? 'active' : ''}" on:click={() => (selected = Home)}>
+			<button class="sidebar-button {selected === Home ? "active" : ""}" on:click={() => (selected = Home)}>
 				<div class="sidebar-icon-container"><i class="bi bi-house"></i></div>
 				home
 			</button>
-			<button class="sidebar-button {selected === Calendar ? 'active' : ''}" on:click={() => (selected = Calendar)}>
+			<button class="sidebar-button {selected === Calendar ? "active" : ""}" on:click={() => (selected = Calendar)}>
 				<div class="sidebar-icon-container"><i class="bi bi-calendar4-week"></i></div>
 				calendar
 			</button>
-			<button class="sidebar-button {selected === Tasks ? 'active' : ''}" on:click={() => (selected = Tasks)}> 
+			<button class="sidebar-button {selected === Tasks ? "active" : ""}" on:click={() => (selected = Tasks)}> 
 				<div class="sidebar-icon-container"><i class="bi bi-check2-circle"></i></div>
 				tasks
 			</button>
-			<button class="sidebar-button {selected === Events ? 'active' : ''}" on:click={() => (selected = Events)}>
+			<button class="sidebar-button {selected === Events ? "active" : ""}" on:click={() => (selected = Events)}>
 				<div class="sidebar-icon-container"><i class="bi bi-calendar4-event"></i></div>
 				events
 			</button>
-			<button class="sidebar-button {selected === Reminders ? 'active' : ''}" on:click={() => (selected = Reminders)}>
+			<button class="sidebar-button {selected === Reminders ? "active" : ""}" on:click={() => (selected = Reminders)}>
 				<div class="sidebar-icon-container"><i class="bi bi-bell"></i></div>
 				reminders
 			</button>
@@ -279,7 +279,7 @@
 			<hr>	
 
 			{#each lists as list, index}
-				<button class="sidebar-button {selected === Lists && selectedList === index ? 'active' : ''}" on:click={() => selectList(index)}>
+				<button class="sidebar-button {selected === Lists && selectedList === index ? "active" : ""}" on:click={() => selectList(index)}>
 					<div class="sidebar-icon-container"><i class="bi bi-list"></i></div>
 					{list.name}
 				</button>
