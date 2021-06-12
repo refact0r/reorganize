@@ -129,8 +129,8 @@
 	.calendar-slider {
 		display: flex;
 		font-size: 1.1em;
-		background: var(--glass-bg-color);
-		backdrop-filter: var(--blur);
+		/* background: var(--glass-bg-color); */
+		/* backdrop-filter: var(--blur); */
 		border-radius: 0.6rem;
 		padding: 0.2rem 0;
 		height: 2.4rem;
@@ -197,6 +197,7 @@
 
 	.calendar-day.today .calendar-day-text {
         background: hsla(0, 0%, 100%, 0.2);
+		font-weight: 500;
 	}
 
 	#indicator {
@@ -204,12 +205,14 @@
 		display: block;
 		position: absolute;
 		background: var(--glass-bg-color);
-		top: 0.2rem;
-		left: 0.2rem;
-		width: 4.6rem;
-		height: 2rem;
-		border-radius: 0.5rem;
+		backdrop-filter: var(--blur);
+		top: 0rem;
+		left: 0rem;
+		bottom: 0rem;
+		width: 5rem;
+		border-radius: 0.6rem;
 		transition: 0.2s ease-out;
+		z-index: -1;
 	}
 
 	.calendar-slider-button:nth-child(2).active ~ #indicator {
