@@ -7,6 +7,8 @@
 	import Reminders from "./Reminders.svelte";
 	import Lists from "./Lists.svelte";
 
+	let username = "refact0r";
+
 	let selected = Home;
 	let selectedList = 0;
 
@@ -110,6 +112,22 @@
 		flex-direction: column-reverse;
 		scrollbar-width: thin;
 		scrollbar-color: hsla(0, 0%, 100%, 0.2) transparent;
+	}
+
+	::-webkit-scrollbar {
+		width: 0.5rem;
+	}
+
+	::-webkit-scrollbar-track {
+		background: transparent;
+	}
+
+	::-webkit-scrollbar-thumb {
+		background: hsla(0, 0%, 100%, 0.1);
+	}
+
+	::-webkit-scrollbar-thumb:hover {
+		background: hsla(0, 0%, 100%, 0.2);
 	}
 
 	#sidebar-inner:hover {
@@ -250,7 +268,7 @@
 
 			<button class="sidebar-button {selected === Profile ? "active" : ""}" on:click={() => (selected = Profile)}>
 				<div class="sidebar-icon-container"><i class="bi bi-person"></i></div>
-				username
+				{username}
 			</button>
 
 			<hr>
@@ -294,5 +312,5 @@
 		</button>
 	</div>
 	
-	<svelte:component this={selected} list={lists[selectedList]}/>
+	<svelte:component this={selected} list={lists[selectedList]} username={username}/>
 </main>
