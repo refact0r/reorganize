@@ -151,7 +151,68 @@
         flex-direction: column;
     }
 
-    .calendar {
+    #title-bar {
+        display: grid;
+		grid-template-columns: 1fr auto 1fr;
+        margin-bottom: 1rem;
+    }	
+
+	.slider-container {
+		display: flex;
+		font-size: 1.1em;
+		border-radius: 0.6rem;
+		position: relative;
+	}
+
+	.slider {
+		margin-right: 0.4rem;
+	}
+
+	.slider.active {
+		font-weight: 500;
+	}
+	
+	.slider-indicator {
+		content: "";
+		display: block;
+		position: absolute;
+		background: var(--font-color);
+		left: 0.4rem;
+		bottom: 0rem;
+		width: 4.2rem;
+		height: 2px;
+		border-radius: 0.6rem;
+		transition: 0.2s ease-out;
+		z-index: -1;
+	}
+
+	.slider:nth-child(2).active ~ .slider-indicator {
+		transform: translate(5.4rem);
+	}
+
+	.slider:nth-child(3).active ~ .slider-indicator {
+		transform: translateX(10rem);
+	}
+
+	#calendar-title {
+		margin: auto;
+	}
+
+	.title-bar-inner {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+	}
+
+	.bi-chevron-left {
+		margin-right: 0.2rem;
+	}
+	
+	.bi-chevron-right {
+		margin-left: 0.2rem;
+	}
+
+    #calendar {
         display: grid;
 		grid-template-rows: auto 1fr;
         height: 100%;
@@ -169,101 +230,6 @@
 
 	.calendar-body.week {
         grid-template-columns: repeat(7, 1fr);
-	}
-
-    .calendar-title-container {
-        display: grid;
-		grid-template-columns: 1fr auto 1fr;
-        margin-bottom: 1rem;
-    }
-
-    .calendar-title {
-        margin: auto;
-    }
-
-	.calendar-title-container-inner {
-		display: flex;
-		justify-content: flex-end;
-	}
-
-	.calendar-button {
-		font-size: 1.1em;
-		width: 5rem;
-		margin: 0 1rem;
-		border-radius: 0.6rem;
-		padding: 0 0.4rem;
-		text-align: center;
-		transition: transform 0.05s ease-out;
-	}
-    
-    .calendar-button-container {
-		display: flex;
-		align-items: center;
-    }
-
-	.calendar-icon-button {
-		border-radius: 1rem;
-		width: 2rem;
-		height: 2rem;
-		padding: 0;
-		margin: 0;
-		text-align: center;
-		transition: transform 0.05s ease-out;
-	}
-
-	.calendar-button:hover {
-		background: hsla(0, 0%, 100%, 0.1);
-	}
-
-	.calendar-button:active {
-		transform: scale(0.95);
-	}
-
-	.calendar-icon-button:hover {
-		background: hsla(0, 0%, 100%, 0.1);
-	}
-
-	.calendar-icon-button:active {
-		transform: scale(0.95);
-	}
-
-	.bi {
-		font-size: 1.2em;
-	}
-
-	.bi-chevron-left {
-		margin-right: 0.2rem;
-	}
-	
-	.bi-chevron-right {
-		margin-left: 0.2rem;
-	}
-
-	.calendar-slider {
-		display: flex;
-		font-size: 1.1em;
-		border-radius: 0.6rem;
-		position: relative;
-	}
-
-	.calendar-slider-button {
-		padding: 0 0.4rem;
-		border-radius: 0.6rem;
-		width: 5rem;
-		margin-right: 0.4rem;
-		transition: transform 0.05s ease-out;
-	}
-
-	.calendar-slider-button.active {
-		font-weight: 500;
-	}
-
-	.calendar-slider-button:hover {
-		background: hsla(0, 0%, 100%, 0.1);
-	}
-
-	.calendar-slider-button:active {
-		transform: scale(0.95);
 	}
 
     .calendar-header {
@@ -316,54 +282,26 @@
         background: hsla(0, 0%, 100%, 0.2);
 		font-weight: 500;
 	}
-
-	.calendar-slider-indicator {
-		content: "";
-		display: block;
-		position: absolute;
-		/* background: var(--glass-bg-color); */
-		background: var(--font-color);
-		/* backdrop-filter: var(--blur); */
-		/* top: 0rem; */
-		left: 0.4rem;
-		bottom: 0rem;
-		width: 4.2rem;
-		height: 2px;
-		border-radius: 0.6rem;
-		transition: 0.2s ease-out;
-		z-index: -1;
-	}
-
-	.calendar-slider-button:nth-child(2).active ~ .calendar-slider-indicator {
-		transform: translate(5.4rem);
-	}
-
-	.calendar-slider-button:nth-child(3).active ~ .calendar-slider-indicator {
-		transform: translateX(10rem);
-	}
 </style>
 
 <div id="page">
-    <div class="calendar-title-container">
-		<div class="calendar-slider">
-			<button class="calendar-slider-button {mode === "week" ? "active" : ""}" on:click={() => switchMode("week")}>week</button>
-			<button class="calendar-slider-button {mode === "month" ? "active" : ""}" on:click={() => switchMode("month")}>month</button>
-			<div class="calendar-slider-indicator"></div>
+    <div id="title-bar">
+		<div class="slider-container">
+			<button class="outside-button text slider {mode === "week" ? "active" : ""}" on:click={() => switchMode("week")}>week</button>
+			<button class="outside-button text slider {mode === "month" ? "active" : ""}" on:click={() => switchMode("month")}>month</button>
+			<div class="slider-indicator"></div>
 		</div>
 
-        <h2 class="calendar-title">{title}</h2>
+        <h2 id="calendar-title">{title}</h2>
 
-		<div class="calendar-title-container-inner">
-			<button class="calendar-button" on:click={() => today()}>today</button>
-			
-			<div class="calendar-button-container">
-				<button class="calendar-icon-button" on:click={() => prevView()}><i class="bi bi-chevron-left"></i></button>
-				<button class="calendar-icon-button" on:click={() => nextView()}><i class="bi bi-chevron-right"></i></button>
-			</div>
+		<div class="title-bar-inner">
+			<button class="outside-button text" on:click={() => today()}>today</button>
+			<button class="outside-button icon" on:click={() => prevView()}><i class="bi bi-chevron-left"></i></button>
+			<button class="outside-button icon" on:click={() => nextView()}><i class="bi bi-chevron-right"></i></button>
 		</div>
     </div>
 
-    <div class="calendar">
+    <div id="calendar">
 		<div class="calendar-header">
             {#each weekdays as _, wd}
                 <div class="calendar-header-day">{weekdays[(wd + offset) % 7]}</div>

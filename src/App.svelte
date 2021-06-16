@@ -6,67 +6,67 @@
 	import Events from "./Events.svelte";
 	import Reminders from "./Reminders.svelte";
 	import Lists from "./Lists.svelte";
+	import firebase from 'firebase/app';
+    import { db } from './firebase';
 
 	let username = "refact0r";
+	let uid = "TGSdllf5Kac83Y1EC5y1";
+
+	let lists = [];
+
+	db.collection("lists")
+		.where("uid", "==", uid)
+		.orderBy("created")
+		.onSnapshot((snapshot) => {
+			lists = snapshot.docs.map((doc) => ({
+				id: doc.id,
+				...doc.data(),
+			}));
+			console.log(lists);
+			updateIndicatorStyle();
+		});
 
 	let selected = Home;
-	let selectedList = 0;
+	let selectedList;
 
-	let lists = [
-		{
-			name: "list 1",
-			items: [
-				"this is a list"
-			]
-		},
-		{
-			name: "list 2",
-			items: [
-				"this is a list"
-			]
-		},
-		{
-			name: "list 3",
-			items: [
-				"this is a list"
-			]
-		}
-	];
-
-	//initialize style vars
-	let css = "";
-	let child = 10;
-	let translate = 22;
-	let style = document.createElement("style");
-	document.head.appendChild(style);
-
-	//add initial indicator styles
-	for (let i = 0; i < lists.length; i++) {
-		css += `.sidebar-button:nth-child(${child}).active ~ #indicator { transform: translateY(${translate}rem); }`;
-		child++;
-		translate += 3;
-	}
-	style.appendChild(document.createTextNode(css));
-
-	//updates indicator style so that it can move to any new lists
-	function updateIndicatorStyle() {
-		css = `.sidebar-button:nth-child(${child}).active ~ #indicator { transform: translateY(${translate}rem); }`;
-		child++;
-		translate += 3;
-		style.appendChild(document.createTextNode(css));
-	}
-	
 	//creates a new list
 	function createList() {
-		lists.push({ name: "list " + (lists.length + 1), items: [ "this is a list" ]});
-		updateIndicatorStyle();	
-		selectList(lists.length - 1);
+		db.collection("lists")
+			.add({
+				name: "new list",
+				created: firebase.firestore.FieldValue.serverTimestamp(),
+				uid: uid
+			}).then((docRef) => {
+				console.log("List added with id: ", docRef.id);
+				selectList(lists.length - 1);
+			});
 	}
 	
 	//selects a list
 	function selectList(index) {
 		selected = Lists;
-		selectedList = index;
+		selectedList = lists[index];
+	}
+
+	//initialize style vars
+	let css = "";
+	let n = 10;
+	let distance = 22;
+	let style = document.createElement("style");
+	document.head.appendChild(style);
+
+	//updates indicator style
+	function updateIndicatorStyle() {
+		css = "";
+		n = 10;
+		distance = 22;
+		for (let i = 0; i < lists.length; i++) {
+			css += `.sidebar-button:nth-child(${n}).active ~ #indicator { transform: translateY(${distance}rem); }`;
+			n++;
+			distance += 3;
+		}
+		style.innerHTML = '';
+		style.appendChild(document.createTextNode(css));
 	}
 </script>
 
@@ -106,7 +106,7 @@
 		z-index: 10;
 	}
 
-	#sidebar-inner {
+	#sidebar-inner-scroll {
 		overflow-y: hidden;
 		display: flex; 
 		flex-direction: column-reverse;
@@ -114,27 +114,11 @@
 		scrollbar-color: hsla(0, 0%, 100%, 0.2) transparent;
 	}
 
-	::-webkit-scrollbar {
-		width: 0.5rem;
-	}
-
-	::-webkit-scrollbar-track {
-		background: transparent;
-	}
-
-	::-webkit-scrollbar-thumb {
-		background: hsla(0, 0%, 100%, 0.1);
-	}
-
-	::-webkit-scrollbar-thumb:hover {
-		background: hsla(0, 0%, 100%, 0.2);
-	}
-
-	#sidebar-inner:hover {
+	#sidebar-inner-scroll:hover {
 		overflow-y: auto;
 	}
 
-	#sidebar-inner2 {
+	#sidebar-inner {
 		position: relative;
 	}
 	
@@ -198,24 +182,24 @@
 	}
 
 	.sidebar-icon-container {
-		width: 1.4rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 1.5rem;
 		margin-right: 1rem;
 	}
 	
 	.bi {
-		font-size: 1.2em;
 		color: var(--sub-color);
 		transition: 0.4s ease-out;
 	}
 
 	.bi-check2-circle {
 		font-size: 1.4em;
-		margin-left: -0.15rem;
 	}
 
 	.bi-plus {
 		font-size: 1.6em;
-		margin-left: -0.25rem;
 	}
 	
 	#new-list-button {
@@ -262,47 +246,46 @@
 
 <main>
 	<div id="sidebar">
-		<div id="sidebar-inner">
-			<div id="sidebar-inner2">
-			<h2 id="title">reorganize</h2>
+		<div id="sidebar-inner-scroll">
+			<div id="sidebar-inner">
+				<h2 id="title">reorganize</h2>
 
-			<button class="sidebar-button {selected === Profile ? "active" : ""}" on:click={() => (selected = Profile)}>
-				<div class="sidebar-icon-container"><i class="bi bi-person"></i></div>
-				{username}
-			</button>
-
-			<hr>
-
-			<button class="sidebar-button {selected === Home ? "active" : ""}" on:click={() => (selected = Home)}>
-				<div class="sidebar-icon-container"><i class="bi bi-house"></i></div>
-				home
-			</button>
-			<button class="sidebar-button {selected === Calendar ? "active" : ""}" on:click={() => (selected = Calendar)}>
-				<div class="sidebar-icon-container"><i class="bi bi-calendar4-week"></i></div>
-				calendar
-			</button>
-			<button class="sidebar-button {selected === Tasks ? "active" : ""}" on:click={() => (selected = Tasks)}> 
-				<div class="sidebar-icon-container"><i class="bi bi-check2-circle"></i></div>
-				tasks
-			</button>
-			<button class="sidebar-button {selected === Events ? "active" : ""}" on:click={() => (selected = Events)}>
-				<div class="sidebar-icon-container"><i class="bi bi-calendar4-event"></i></div>
-				events
-			</button>
-			<button class="sidebar-button {selected === Reminders ? "active" : ""}" on:click={() => (selected = Reminders)}>
-				<div class="sidebar-icon-container"><i class="bi bi-bell"></i></div>
-				reminders
-			</button>
-
-			<hr>	
-
-			{#each lists as list, index}
-				<button class="sidebar-button {selected === Lists && selectedList === index ? "active" : ""}" on:click={() => selectList(index)}>
-					<div class="sidebar-icon-container"><i class="bi bi-list"></i></div>
-					{list.name}
+				<button class="sidebar-button {selected === Profile ? "active" : ""}" on:click={() => (selected = Profile)}>
+					<div class="sidebar-icon-container"><i class="bi bi-person"></i></div>
+					{username}
 				</button>
-			{/each}
-			<div id="indicator"></div>
+
+				<hr>
+
+				<button class="sidebar-button {selected === Home ? "active" : ""}" on:click={() => (selected = Home)}>
+					<div class="sidebar-icon-container"><i class="bi bi-house"></i></div>
+					home
+				</button>
+				<button class="sidebar-button {selected === Calendar ? "active" : ""}" on:click={() => (selected = Calendar)}>
+					<div class="sidebar-icon-container"><i class="bi bi-calendar4-week"></i></div>
+					calendar
+				</button>
+				<button class="sidebar-button {selected === Tasks ? "active" : ""}" on:click={() => (selected = Tasks)}> 
+					<div class="sidebar-icon-container"><i class="bi bi-check2-circle"></i></div>
+					tasks
+				</button>
+				<button class="sidebar-button {selected === Events ? "active" : ""}" on:click={() => (selected = Events)}>
+					<div class="sidebar-icon-container"><i class="bi bi-calendar4-event"></i></div>
+					events
+				</button>
+				<button class="sidebar-button {selected === Reminders ? "active" : ""}" on:click={() => (selected = Reminders)}>
+					<div class="sidebar-icon-container"><i class="bi bi-bell"></i></div>
+					reminders
+				</button>
+
+				<hr>
+				{#each lists as list, index}
+					<button class="sidebar-button {selected === Lists && selectedList.id === list.id ? "active" : ""}" on:click={() => selectList(index)}>
+						<div class="sidebar-icon-container"><i class="bi bi-list"></i></div>
+						{list.name}
+					</button>
+				{/each}
+				<div id="indicator"></div>
 			</div>
 		</div>
 
@@ -312,5 +295,5 @@
 		</button>
 	</div>
 	
-	<svelte:component this={selected} list={lists[selectedList]} username={username}/>
+	<svelte:component this={selected} list={selectedList} username={username}/>
 </main>
