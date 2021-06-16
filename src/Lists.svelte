@@ -12,37 +12,26 @@
         height: 100vh;
         z-index: 5;
     }
-    
+
     #page-title {
-        margin: 0 0 2rem 0;
+        margin: 0;
     }
-    
-    .task {
+
+    #header-bar {
         display: flex;
-        padding: 0.7rem 1rem;
-        backdrop-filter: var(--blur);
-        background: var(--glass-bg-color);
-        border: var(--glass-border);
-        border-radius: 0.6rem;
-        margin-bottom: 0.3rem;
         align-items: center;
-        box-shadow: var(--box-shadow);
-    }
-    
-    .complete {
-        background: none;
-        margin: 0 1rem 0 0;
-        padding: 0;
-        width: 1.4rem;
-        height: 1.4rem;
-        border-radius: 2rem;
-        border: 2px solid var(--sub-color);
+        justify-content: space-between;
+        margin: 0 0 2rem 0;
     }
 </style>
 
 <div id="page">
-    <h2 id="page-title">{list.name}</h2>
-    {#each list.items as item}
+    <div id="header-bar">
+        <h2 id="page-title">{list.name}</h2>
+        <button class="icon-button"><i class="bi bi-three-dots-vertical"></i></button>
+    </div>
+    {list.created}
+    <!-- {#each list.items as item}
         <div class="task"><button class="complete"></button>{item}</div>
-    {/each}
+    {/each} -->
 </div>

@@ -19,6 +19,8 @@
     "svelte": "^3.0.0"
   },
   "dependencies": {
+    "firebase": "^8.6.7",
+    "jsobjects": "^1.0.11",
     "sirv-cli": "^1.0.0",
     "svelte-scrollto": "^0.2.0"
   }

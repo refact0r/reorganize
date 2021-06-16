@@ -17,13 +17,24 @@
 	box-sizing: border-box;
 }
 
-body {
-	margin: 0;
+::-webkit-scrollbar {
+	width: 0.5rem;
 }
 
-a {
-	text-decoration: none;
-	color: inherit;
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+	background: hsla(0, 0%, 100%, 0.1);
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: hsla(0, 0%, 100%, 0.2);
+}
+
+body {
+	margin: 0;
 }
 
 button {
@@ -40,6 +51,40 @@ button:hover {
 
 button:focus {
 	outline: none;
+}
+
+.bi {
+	font-size: 1.2em;
+}
+
+.outside-button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: transform 0.05s ease-out;
+}
+
+.outside-button.icon {
+	border-radius: 1rem;
+	width: 2rem;
+	height: 2rem;
+	padding: 0;
+}
+	
+.outside-button.text {
+	font-size: 1.1em;
+	width: 5rem;
+	height: 2.4rem;
+	border-radius: 0.6rem;
+	padding: 0 0.4rem;
+}
+
+.outside-button:hover {
+	background: hsla(0, 0%, 100%, 0.1);
+}
+
+.outside-button:active {
+	transform: scale(0.95);
 }
     
 .task {
