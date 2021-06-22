@@ -274,11 +274,11 @@
 		border-radius: 2rem;
 	}
 
-    .other {
+    .other .calendar-day-text{
         color: hsla(0, 0%, 100%, 0.3);
     }
 
-	.calendar-day.today .calendar-day-text {
+	.today .calendar-day-text {
         background: hsla(0, 0%, 100%, 0.2);
 		font-weight: 500;
 	}

@@ -11,23 +11,49 @@
 
 	let username = "refact0r";
 	let uid = "TGSdllf5Kac83Y1EC5y1";
-
+	let child;
 	let lists = [];
 
 	db.collection("lists")
 		.where("uid", "==", uid)
 		.orderBy("created")
 		.onSnapshot((snapshot) => {
-			lists = snapshot.docs.map((doc) => ({
-				id: doc.id,
-				...doc.data(),
-			}));
-			console.log(lists);
+			lists = snapshot.docs.map((doc, index) => {
+				let item;
+				if (lists.length > index) {
+					item = {
+						id: doc.id,
+						...doc.data(),
+						tasks: lists[index].tasks
+					}
+				} else {
+					item = {
+						id: doc.id,
+						...doc.data(),
+						tasks: []
+					}
+				}
+				db.collection("tasks")
+					.where("list_id", "==", doc.id)
+					.orderBy("created")
+					.onSnapshot((snapshot) => {
+						item.tasks = snapshot.docs.map((doc) => ({
+							id: doc.id,
+							...doc.data(),
+						}));
+						if (index === selectedIndex) {
+							selectedList = lists[selectedIndex];
+						}
+					})
+				return item;
+			});
+			console.log("Lists updated: ", lists);
 			updateIndicatorStyle();
 		});
 
 	let selected = Home;
-	let selectedList;
+	let selectedIndex = 0;
+	$: selectedList = lists[selectedIndex];
 
 	//creates a new list
 	function createList() {
@@ -37,15 +63,31 @@
 				created: firebase.firestore.FieldValue.serverTimestamp(),
 				uid: uid
 			}).then((docRef) => {
-				console.log("List added with id: ", docRef.id);
 				selectList(lists.length - 1);
+				child.focusInput();
+				console.log("List added with id: ", docRef.id);
 			});
 	}
+
+	//deletes a list
+	function deleteList(id) {
+		if (selectedIndex > 0) {
+			selectList(selectedIndex - 1);
+		} else {
+			selected = Home;
+		}
+        db.collection("lists")
+			.doc(id)
+			.delete()
+			.then((docRef) => {
+				console.log("List deleted with id: ", id);
+			});
+    }
 	
 	//selects a list
 	function selectList(index) {
 		selected = Lists;
-		selectedList = lists[index];
+		selectedIndex = index;
 	}
 
 	//initialize style vars
@@ -110,6 +152,7 @@
 		overflow-y: hidden;
 		display: flex; 
 		flex-direction: column-reverse;
+		height: 100%;
 		scrollbar-width: thin;
 		scrollbar-color: hsla(0, 0%, 100%, 0.2) transparent;
 	}
@@ -120,6 +163,7 @@
 
 	#sidebar-inner {
 		position: relative;
+		height: 100%;
 	}
 	
 	.sidebar-button {
@@ -139,8 +183,40 @@
 		transform: scale(0.95);
 	}
 	
+	.sidebar-button-text {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.sidebar-icon-container {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 1.5rem;
+		margin-right: 1rem;
+		flex-shrink: 0;
+	}
+	
 	.active {
 		font-weight: 500;
+	}
+	
+	.active .bi {
+		color: var(--font-color) !important;
+	}
+	
+	.bi {
+		color: var(--sub-color);
+		transition: 0.4s ease-out;
+	}
+
+	.bi-check2-circle {
+		font-size: 1.4em;
+	}
+
+	.bi-plus {
+		font-size: 1.6em;
 	}
 
 	#indicator {
@@ -175,31 +251,6 @@
 
 	.sidebar-button:nth-child(8).active ~ #indicator {
 		transform: translateY(17rem);
-	}
-	
-	.active .bi {
-		color: var(--font-color) !important;
-	}
-
-	.sidebar-icon-container {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 1.5rem;
-		margin-right: 1rem;
-	}
-	
-	.bi {
-		color: var(--sub-color);
-		transition: 0.4s ease-out;
-	}
-
-	.bi-check2-circle {
-		font-size: 1.4em;
-	}
-
-	.bi-plus {
-		font-size: 1.6em;
 	}
 	
 	#new-list-button {
@@ -280,9 +331,9 @@
 
 				<hr>
 				{#each lists as list, index}
-					<button class="sidebar-button {selected === Lists && selectedList.id === list.id ? "active" : ""}" on:click={() => selectList(index)}>
+					<button class="sidebar-button {selected === Lists && selectedIndex === index ? "active" : ""}" on:click={() => selectList(index)}>
 						<div class="sidebar-icon-container"><i class="bi bi-list"></i></div>
-						{list.name}
+						<div class="sidebar-button-text">{list.name}</div>
 					</button>
 				{/each}
 				<div id="indicator"></div>
@@ -295,5 +346,13 @@
 		</button>
 	</div>
 	
-	<svelte:component this={selected} list={selectedList} username={username}/>
+	<svelte:component 
+		this={selected} 
+		lists={lists}
+		list={selectedList}
+		selectedIndex={selectedIndex}
+		username={username}
+		on:deleteList={(event) => deleteList(event.detail.id)}
+		bind:this={child}
+	/>
 </main>
