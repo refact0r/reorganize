@@ -6,6 +6,8 @@
 	import Events from "./Events.svelte";
 	import Reminders from "./Reminders.svelte";
 	import Lists from "./Lists.svelte";
+	import { onMount } from 'svelte';
+	import { tick } from 'svelte'
 	import firebase from 'firebase/app';
     import { db } from './firebase';
 
@@ -14,46 +16,52 @@
 	let child;
 	let lists = [];
 
+	onMount(() => {
+        
+    });
+
 	db.collection("lists")
 		.where("uid", "==", uid)
 		.orderBy("created")
 		.onSnapshot((snapshot) => {
 			lists = snapshot.docs.map((doc, index) => {
 				let item;
-				if (lists.length > index) {
+				if (index < lists.length) {
 					item = {
 						id: doc.id,
 						...doc.data(),
-						tasks: lists[index].tasks
+						tasks: lists[index].tasks,
+						unsubscribe: lists[index].unsubscribe
 					}
 				} else {
 					item = {
 						id: doc.id,
 						...doc.data(),
-						tasks: []
+						tasks: [],
+						unsubscribe: db.collection("tasks")
+							.where("list_id", "==", doc.id)
+							.orderBy("created")
+							.onSnapshot((snapshot) => {
+								item.tasks = snapshot.docs.map((doc) => ({
+									id: doc.id,
+									...doc.data(),
+								}));
+								if (index === selectedIndex) {
+									selectedList = lists[selectedIndex];
+								}
+							})
 					}
 				}
-				db.collection("tasks")
-					.where("list_id", "==", doc.id)
-					.orderBy("created")
-					.onSnapshot((snapshot) => {
-						item.tasks = snapshot.docs.map((doc) => ({
-							id: doc.id,
-							...doc.data(),
-						}));
-						if (index === selectedIndex) {
-							selectedList = lists[selectedIndex];
-						}
-					})
 				return item;
 			});
-			console.log("Lists updated: ", lists);
 			updateIndicatorStyle();
+			console.log("Lists updated: ", lists);
 		});
 
 	let selected = Home;
 	let selectedIndex = 0;
 	$: selectedList = lists[selectedIndex];
+	
 
 	//creates a new list
 	function createList() {
@@ -64,18 +72,20 @@
 				uid: uid
 			}).then((docRef) => {
 				selectList(lists.length - 1);
-				child.focusInput();
+				tick().then(() => child.focusInput());
 				console.log("List added with id: ", docRef.id);
 			});
 	}
 
 	//deletes a list
-	function deleteList(id) {
-		if (selectedIndex > 0) {
-			selectList(selectedIndex - 1);
+	function deleteList(index) {
+		let id = lists[index].id;
+		if (index > 0) {
+			selectList(index - 1);
 		} else {
 			selected = Home;
 		}
+		lists[index].unsubscribe();
         db.collection("lists")
 			.doc(id)
 			.delete()
@@ -149,21 +159,21 @@
 	}
 
 	#sidebar-inner-scroll {
-		overflow-y: hidden;
-		display: flex; 
+		overflow-y: auto;
+		display: flex;
 		flex-direction: column-reverse;
 		height: 100%;
-		scrollbar-width: thin;
+		scrollbar-width: none;
 		scrollbar-color: hsla(0, 0%, 100%, 0.2) transparent;
 	}
 
 	#sidebar-inner-scroll:hover {
-		overflow-y: auto;
+		scrollbar-width: thin;
 	}
 
 	#sidebar-inner {
+		margin-bottom: auto; 
 		position: relative;
-		height: 100%;
 	}
 	
 	.sidebar-button {
@@ -301,30 +311,30 @@
 			<div id="sidebar-inner">
 				<h2 id="title">reorganize</h2>
 
-				<button class="sidebar-button {selected === Profile ? "active" : ""}" on:click={() => (selected = Profile)}>
+				<button class="sidebar-button {selected === Profile ? "active" : ""}" on:click={() => selected = Profile}>
 					<div class="sidebar-icon-container"><i class="bi bi-person"></i></div>
 					{username}
 				</button>
 
 				<hr>
 
-				<button class="sidebar-button {selected === Home ? "active" : ""}" on:click={() => (selected = Home)}>
+				<button class="sidebar-button {selected === Home ? "active" : ""}" on:click={() => selected = Home}>
 					<div class="sidebar-icon-container"><i class="bi bi-house"></i></div>
 					home
 				</button>
-				<button class="sidebar-button {selected === Calendar ? "active" : ""}" on:click={() => (selected = Calendar)}>
+				<button class="sidebar-button {selected === Calendar ? "active" : ""}" on:click={() => selected = Calendar}>
 					<div class="sidebar-icon-container"><i class="bi bi-calendar4-week"></i></div>
 					calendar
 				</button>
-				<button class="sidebar-button {selected === Tasks ? "active" : ""}" on:click={() => (selected = Tasks)}> 
+				<button class="sidebar-button {selected === Tasks ? "active" : ""}" on:click={() => selected = Tasks}> 
 					<div class="sidebar-icon-container"><i class="bi bi-check2-circle"></i></div>
 					tasks
 				</button>
-				<button class="sidebar-button {selected === Events ? "active" : ""}" on:click={() => (selected = Events)}>
+				<button class="sidebar-button {selected === Events ? "active" : ""}" on:click={() => selected = Events}>
 					<div class="sidebar-icon-container"><i class="bi bi-calendar4-event"></i></div>
 					events
 				</button>
-				<button class="sidebar-button {selected === Reminders ? "active" : ""}" on:click={() => (selected = Reminders)}>
+				<button class="sidebar-button {selected === Reminders ? "active" : ""}" on:click={() => selected = Reminders}>
 					<div class="sidebar-icon-container"><i class="bi bi-bell"></i></div>
 					reminders
 				</button>
@@ -347,12 +357,10 @@
 	</div>
 	
 	<svelte:component 
-		this={selected} 
-		lists={lists}
+		this={selected}
 		list={selectedList}
 		selectedIndex={selectedIndex}
-		username={username}
-		on:deleteList={(event) => deleteList(event.detail.id)}
-		bind:this={child}
-	/>
+		username={username}	
+		on:deleteList={(event) => deleteList(event.detail.index)}
+		bind:this={child}/>
 </main>

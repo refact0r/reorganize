@@ -5,13 +5,12 @@
     const dispatch = createEventDispatcher();
 
     // export let lists;
-    // export let selectedIndex;
-
+    export let selectedIndex;
     export let list;
 
     function deleteList() {
         dispatch('deleteList', {
-            id: list.id
+            index: selectedIndex
         });
     }
 
@@ -32,9 +31,19 @@
             event.target.blur();
         }
     }
+    
+    let name = list.name;
+    let prevName = name;
 
-    export function focusInput(){
+    $: if (list.name != prevName) {
+        name = list.name;
+        prevName = name;
+    }
+
+    export function focusInput() {
         document.getElementById("page-title").focus();
+        name = "";
+        console.log("name set");
     }
 </script>
 
@@ -83,7 +92,11 @@
 {#if list}
     <div id="page">
         <div id="title-bar">
-            <input id="page-title" on:change={event => renameList(event)} on:keydown={event => deselectOnEnter(event)} value={list.name}>
+            <input id="page-title"
+                value={name}
+                placeholder="Enter list name..."
+                on:change={event => renameList(event)} 
+                on:keydown={event => deselectOnEnter(event)}>
             <button class="outside-button icon" on:click={() => deleteList()}><i class="bi bi-trash"></i></button>
         </div>
         {#each list.tasks as task}
