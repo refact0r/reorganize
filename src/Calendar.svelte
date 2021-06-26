@@ -241,11 +241,7 @@
     }
 
 	.calendar-header, .calendar-day {
-		background: var(--glass-bg-color);
-        backdrop-filter: var(--blur);
-        border: var(--glass-border);
         border-radius: 0.6rem;
-        box-shadow: var(--box-shadow);
 	}
 
 	.calendar-week {
@@ -279,27 +275,31 @@
         background: hsla(0, 0%, 100%, 0.2);
 		font-weight: 500;
 	}
+
+	.button.outside.text {
+		width: 5rem;
+	}
 </style>
 
 <div id="page">
     <div id="title-bar">
 		<div class="slider-container">
-			<button class="outside-button text slider {mode === "week" ? "active" : ""}" on:click={() => switchMode("week")}>week</button>
-			<button class="outside-button text slider {mode === "month" ? "active" : ""}" on:click={() => switchMode("month")}>month</button>
+			<button class="button outside text slider {mode === "week" ? "active" : ""}" on:click={() => switchMode("week")}>week</button>
+			<button class="button outside text slider {mode === "month" ? "active" : ""}" on:click={() => switchMode("month")}>month</button>
 			<div class="slider-indicator"></div>
 		</div>
 
         <h2 id="calendar-title">{title}</h2>
 
 		<div class="title-bar-inner">
-			<button class="outside-button text" on:click={() => today()}>today</button>
-			<button class="outside-button icon" on:click={() => prevView()}><i class="bi bi-chevron-left"></i></button>
-			<button class="outside-button icon" on:click={() => nextView()}><i class="bi bi-chevron-right"></i></button>
+			<button class="button outside text" on:click={() => today()}>today</button>
+			<button class="button outside icon" on:click={() => prevView()}><i class="bi bi-chevron-left"></i></button>
+			<button class="button outside icon" on:click={() => nextView()}><i class="bi bi-chevron-right"></i></button>
 		</div>
     </div>
 
     <div id="calendar">
-		<div class="calendar-header">
+		<div class="calendar-header glass-bg">
             {#each weekdays as _, wd}
                 <div class="calendar-header-day">{weekdays[(wd + offset) % 7]}</div>
             {/each}
@@ -312,27 +312,27 @@
 						{#each {length: 7} as _, d}
 							{#if current[w]}
 								{#if current[w][d] === date.getDate() && month === date.getMonth() && year === date.getFullYear()}
-									<div class="calendar-day today">
+									<div class="calendar-day glass-bg today">
 										<div class="calendar-day-text">{current[w][d]}</div>
 									</div>
 
 								{:else if current[w][d] !== 0}
-									<div class="calendar-day">
+									<div class="calendar-day glass-bg">
 										<div class="calendar-day-text">{current[w][d]}</div>
 									</div>
 
 								{:else if w < 1}
-									<div class="calendar-day other">
+									<div class="calendar-day glass-bg other">
 										<div class="calendar-day-text">{prev[prev.length - 1][d]}</div>
 									</div>
 
 								{:else}
-									<div class="calendar-day other">
+									<div class="calendar-day glass-bg other">
 										<div class="calendar-day-text">{next[0][d]}</div>
 									</div>
 								{/if}
 							{:else}
-								<div class="calendar-day other">
+								<div class="calendar-day glass-bg other">
 									<div class="calendar-day-text">{next[1][d]}</div>
 								</div>
 							{/if}
@@ -344,22 +344,22 @@
 			<div class="calendar-body week">
 				{#each {length: 7} as _, d}
 					{#if current[week][d] === date.getDate() && month === date.getMonth()}
-						<div class="calendar-day today">
+						<div class="calendar-day glass-bg today">
 							<div class="calendar-day-text">{current[week][d]}</div>
 						</div>
 
 					{:else if current[week][d] !== 0}
-						<div class="calendar-day">
+						<div class="calendar-day glass-bg">
 							<div class="calendar-day-text">{current[week][d]}</div>
 						</div>
 
 					{:else if week < 1}
-						<div class="calendar-day">
+						<div class="calendar-day glass-bg">
 							<div class="calendar-day-text">{prev[prev.length - 1][d]}</div>
 						</div>
 
 					{:else}
-						<div class="calendar-day">
+						<div class="calendar-day glass-bg">
 							<div class="calendar-day-text">{next[0][d]}</div>
 						</div>
 					{/if}

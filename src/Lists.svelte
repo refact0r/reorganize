@@ -94,7 +94,7 @@
             <button class="outside-button icon" on:click={() => deleteList()}><i class="bi bi-trash"></i></button>
         </div>
         {#each list.tasks as task}
-            <div class="task"><button class="task-complete-button"></button>{task.name}</div>
+            <div class="task glass-bg"><button class="task-complete-button"></button>{task.name}</div>
         {/each}
     </div>
 {/if}
