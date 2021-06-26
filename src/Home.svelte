@@ -18,10 +18,4 @@
     <h2>2:03 pm</h2>
 
     <h2>today is sunday, june 13.</h2>
-
-    <div class="task"><button class="task-complete-button"></button>some task</div>
-    <div class="task"><button class="task-complete-button"></button>some task</div>
-    <div class="task"><button class="task-complete-button"></button>some task</div>
-    <div class="task"><button class="task-complete-button"></button>some task</div>
-    <div class="task"><button class="task-complete-button"></button>some task</div>
 </div>

@@ -11,6 +11,7 @@
 	import firebase from 'firebase/app';
     import { db } from './firebase';
 	import { auth, googleProvider } from './firebase';
+	import { fly } from 'svelte/transition';
 
 	let username = "refact0r";
 	let uid = "TGSdllf5Kac83Y1EC5y1";
@@ -156,7 +157,7 @@
 		display: flex;
 		height: 100vh;
 		overflow: hidden;
-		background: var(--background);
+		background: var(--bg-picture);
 		background-position: center;
 		background-size: cover;
 		color: var(--font-color);
@@ -171,7 +172,7 @@
 		left: 0;
 		bottom: 0;
 		right: 0;
-		backdrop-filter: var(--background-filter);
+		backdrop-filter: var(--bg-filter);
 		z-index: 1;
 	}
 	
@@ -180,12 +181,9 @@
 		flex-shrink: 0;
 		flex-direction: column;
 		height: 100vh;
-		backdrop-filter: var(--blur);
-		background: var(--glass-bg-color);
-		border-right: var(--glass-border);
-		box-shadow: var(--box-shadow);
 		z-index: 10;
 		width: 16rem;
+		border-radius: 0;
 	}
 
 	#sidebar-inner-scroll {
@@ -248,7 +246,7 @@
 	
 	.bi {
 		color: var(--sub-color);
-		transition: 0.4s ease-out;
+		transition: 0.2s ease-out;
 	}
 
 	.bi-check2-circle {
@@ -294,20 +292,9 @@
 	}
 	
 	#new-list-button {
-		display: flex;
-		justify-self: flex-end;
-		align-items: center;
 		margin: auto 0 1rem 0;
-		background: none;
-		text-align: left;
-		padding: 0rem 2rem;
-		height: 3rem;
-		width: 100%;
 		flex-shrink: 0;
-	}
-	
-	#new-list-button:hover {
-		background: hsla(0, 0%, 100%, 0.1);
+		justify-self: flex-end;
 	}
 	
 	#sidebar-title {
@@ -338,28 +325,14 @@
 		width: auto;
 		height: auto;
 		margin: auto;
-		backdrop-filter: var(--blur);
-		background: var(--glass-bg-color);
-		border: var(--glass-border);
-		border-radius: 0.6rem;
-		box-shadow: var(--box-shadow);
 		padding: 2rem;
 		z-index: 5;
 		text-align: center;
 	}
 
 	#login-button {
-		display: flex;
-		padding: 1.4rem 1rem;
-		background: var(--glass-bg-color);
-		/* border: 2px solid var(--sub-color); */
-		border-radius: 0.6rem;
+		padding: 0.4rem 0.6rem;
 		width: 100%;
-		margin: auto;
-	}
-
-	#login-button:hover {
-		background: hsla(0, 0%, 100%, 0.2);
 	}
 
 	#login-title {
@@ -381,7 +354,7 @@
 
 <main>
 	{#if user}
-		<div id="sidebar">
+		<div id="sidebar" class="glass-bg" transition:fly="{{ x: -200, duration: 1000 }}">
 			<div id="sidebar-inner-scroll">
 				<div id="sidebar-inner">
 					<h2 id="sidebar-title">reorganize</h2>
@@ -425,9 +398,9 @@
 				</div>
 			</div>
 
-			<button id="new-list-button" on:click={() => createList()}>
+			<button id="new-list-button" class="sidebar-button" on:click={() => createList()}>
 				<div class="sidebar-icon-container"><i class="bi bi-plus"></i></div>
-				new list
+				<div class="sidebar-button-text">new list</div>
 			</button>
 		</div>
 		
@@ -439,9 +412,9 @@
 			on:deleteList={(event) => deleteList(event.detail.index)}
 			bind:this={child}/>
 	{:else}
-		<div id="login-container">
+		<div id="login-container" class="glass-bg">
 			<h2 id="login-title">welcome to reorganize!</h2>
-			<button on:click={login} id="login-button" class="outside-button text">
+			<button on:click={login} id="login-button" class="button inside">
 				<div class="login-icon-container"><i class="bi bi-google"></i></div>
 				<div class="login-button-text">sign in with google</div>
 			</button>

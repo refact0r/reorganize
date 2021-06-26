@@ -13,9 +13,4 @@
 
 <div id="page">
     <h2 id="page-title">profile</h2>
-    <div class="task"><button class="complete"></button>some task</div>
-    <div class="task"><button class="complete"></button>some task</div>
-    <div class="task"><button class="complete"></button>some task</div>
-    <div class="task"><button class="complete"></button>some task</div>
-    <div class="task"><button class="complete"></button>some task</div>
 </div>
