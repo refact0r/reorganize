@@ -3,7 +3,7 @@
 	--sub-color: hsla(0, 0%, 100%, 0.3);
 	--glass-bg-color: hsla(0, 0%, 100%, 0.1);
 	--glass-border: 1px solid hsla(0, 0%, 100%, 0); 
-	--box-shadow: 0.2rem 0.2rem 0.4rem hsla(0, 0%, 0%, 0.2);
+	--box-shadow: 0.2rem 0.2rem 1rem hsla(0, 0%, 0%, 0.2);
 	--blur: blur(15px);
 	--background-filter: brightness(0.6) contrast(0.9) saturate(1.2);
 	--background: url("/leaves.jpg");
@@ -65,9 +65,9 @@ button:focus {
 }
 
 .outside-button.icon {
-	border-radius: 1rem;
-	width: 2rem;
-	height: 2rem;
+	border-radius: 10rem;
+	width: 2.4rem;
+	height: 2.4rem;
 	padding: 0;
 }
 	
@@ -107,4 +107,11 @@ button:focus {
 	height: 1.4rem;
 	border-radius: 2rem;
 	border: 2px solid var(--sub-color);
+}
+
+#page {
+	padding: 2rem 3rem 3rem 3rem;
+	height: 100vh;
+	width: 100%;
+	z-index: 5;
 }

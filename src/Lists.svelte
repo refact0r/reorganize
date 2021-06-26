@@ -54,12 +54,6 @@
 </svelte:head>
 
 <style>
-    #page {
-        padding: 2rem 3rem;
-        height: 100vh;
-        z-index: 5;
-    }
-
     #page-title {
         margin: 0 2rem 0 0;
         width: 100%;

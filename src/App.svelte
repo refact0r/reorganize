@@ -10,16 +10,19 @@
 	import { tick } from 'svelte'
 	import firebase from 'firebase/app';
     import { db } from './firebase';
+	import { auth, googleProvider } from './firebase';
 
 	let username = "refact0r";
 	let uid = "TGSdllf5Kac83Y1EC5y1";
+	let user;
+	// user = "hi";
 	let child;
+	let selected = Home;
+	let selectedIndex = 0;
 	let lists = [];
+	$: selectedList = lists[selectedIndex];
 
-	onMount(() => {
-        
-    });
-
+	//listen for list changes
 	db.collection("lists")
 		.where("uid", "==", uid)
 		.orderBy("created")
@@ -58,11 +61,6 @@
 			console.log("Lists updated: ", lists);
 		});
 
-	let selected = Home;
-	let selectedIndex = 0;
-	$: selectedList = lists[selectedIndex];
-	
-
 	//creates a new list
 	function createList() {
 		db.collection("lists")
@@ -100,6 +98,37 @@
 		selectedIndex = index;
 	}
 
+	//check for auth changes
+	auth.onAuthStateChanged((authUser) => {
+		console.log('auth state changed');
+		if (authUser) {
+			db.collection('users')
+				.doc(authUser.uid)
+				.get()
+				.then((docSnapshot) => {
+					if (!docSnapshot.exists) {
+						console.log(authUser.uid);
+						db.collection('users')
+							.doc(authUser.uid)
+							.set({
+								created: firebase.firestore.FieldValue.serverTimestamp(),
+							});
+					}
+				});
+			user = authUser;
+		}
+	});
+
+	//login
+	function login() {
+        auth.signInWithPopup(googleProvider);
+    }
+
+	//logout
+	function logout() {
+		auth.signOut();
+	}
+
 	//initialize style vars
 	let css = "";
 	let n = 10;
@@ -124,8 +153,7 @@
 
 <style>
 	main {
-		display: grid;
-		grid-template-columns: 16rem auto;
+		display: flex;
 		height: 100vh;
 		overflow: hidden;
 		background: var(--background);
@@ -149,6 +177,7 @@
 	
 	#sidebar {
 		display: flex;
+		flex-shrink: 0;
 		flex-direction: column;
 		height: 100vh;
 		backdrop-filter: var(--blur);
@@ -156,6 +185,7 @@
 		border-right: var(--glass-border);
 		box-shadow: var(--box-shadow);
 		z-index: 10;
+		width: 16rem;
 	}
 
 	#sidebar-inner-scroll {
@@ -204,8 +234,8 @@
 		align-items: center;
 		justify-content: center;
 		width: 1.5rem;
-		margin-right: 1rem;
 		flex-shrink: 0;
+		margin-right: 1rem;
 	}
 	
 	.active {
@@ -280,7 +310,7 @@
 		background: hsla(0, 0%, 100%, 0.1);
 	}
 	
-	#title {
+	#sidebar-title {
 		padding: 2rem 2rem 1rem 2rem;
 		margin: 0;
 	}
@@ -303,64 +333,118 @@
 		height: 2px;
 		background: var(--sub-color);
 	}
+
+	#login-container {
+		width: auto;
+		height: auto;
+		margin: auto;
+		backdrop-filter: var(--blur);
+		background: var(--glass-bg-color);
+		border: var(--glass-border);
+		border-radius: 0.6rem;
+		box-shadow: var(--box-shadow);
+		padding: 2rem;
+		z-index: 5;
+		text-align: center;
+	}
+
+	#login-button {
+		display: flex;
+		padding: 1.4rem 1rem;
+		background: var(--glass-bg-color);
+		/* border: 2px solid var(--sub-color); */
+		border-radius: 0.6rem;
+		width: 100%;
+		margin: auto;
+	}
+
+	#login-button:hover {
+		background: hsla(0, 0%, 100%, 0.2);
+	}
+
+	#login-title {
+		margin: 0 0 2rem 0;
+	}
+
+	.login-icon-container {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 1.5rem;
+		flex-shrink: 0;
+	}
+
+	.login-button-text {
+		margin: 0 auto;
+	}
 </style>
 
 <main>
-	<div id="sidebar">
-		<div id="sidebar-inner-scroll">
-			<div id="sidebar-inner">
-				<h2 id="title">reorganize</h2>
+	{#if user}
+		<div id="sidebar">
+			<div id="sidebar-inner-scroll">
+				<div id="sidebar-inner">
+					<h2 id="sidebar-title">reorganize</h2>
 
-				<button class="sidebar-button {selected === Profile ? "active" : ""}" on:click={() => selected = Profile}>
-					<div class="sidebar-icon-container"><i class="bi bi-person"></i></div>
-					{username}
-				</button>
-
-				<hr>
-
-				<button class="sidebar-button {selected === Home ? "active" : ""}" on:click={() => selected = Home}>
-					<div class="sidebar-icon-container"><i class="bi bi-house"></i></div>
-					home
-				</button>
-				<button class="sidebar-button {selected === Calendar ? "active" : ""}" on:click={() => selected = Calendar}>
-					<div class="sidebar-icon-container"><i class="bi bi-calendar4-week"></i></div>
-					calendar
-				</button>
-				<button class="sidebar-button {selected === Tasks ? "active" : ""}" on:click={() => selected = Tasks}> 
-					<div class="sidebar-icon-container"><i class="bi bi-check2-circle"></i></div>
-					tasks
-				</button>
-				<button class="sidebar-button {selected === Events ? "active" : ""}" on:click={() => selected = Events}>
-					<div class="sidebar-icon-container"><i class="bi bi-calendar4-event"></i></div>
-					events
-				</button>
-				<button class="sidebar-button {selected === Reminders ? "active" : ""}" on:click={() => selected = Reminders}>
-					<div class="sidebar-icon-container"><i class="bi bi-bell"></i></div>
-					reminders
-				</button>
-
-				<hr>
-				{#each lists as list, index}
-					<button class="sidebar-button {selected === Lists && selectedIndex === index ? "active" : ""}" on:click={() => selectList(index)}>
-						<div class="sidebar-icon-container"><i class="bi bi-list"></i></div>
-						<div class="sidebar-button-text">{list.name}</div>
+					<button class="sidebar-button {selected === Profile ? "active" : ""}" on:click={() => selected = Profile}>
+						<div class="sidebar-icon-container"><i class="bi bi-person"></i></div>
+						{user.displayName}
 					</button>
-				{/each}
-				<div id="indicator"></div>
-			</div>
-		</div>
 
-		<button id="new-list-button" on:click={() => createList()}>
-			<div class="sidebar-icon-container"><i class="bi bi-plus"></i></div>
-			new list
-		</button>
-	</div>
-	
-	<svelte:component 
-		this={selected}
-		list={selectedList}
-		selectedIndex={selectedIndex}
-		username={username}	
-		on:deleteList={(event) => deleteList(event.detail.index)}
-		bind:this={child}/>
+					<hr>
+
+					<button class="sidebar-button {selected === Home ? "active" : ""}" on:click={() => selected = Home}>
+						<div class="sidebar-icon-container"><i class="bi bi-house"></i></div>
+						home
+					</button>
+					<button class="sidebar-button {selected === Calendar ? "active" : ""}" on:click={() => selected = Calendar}>
+						<div class="sidebar-icon-container"><i class="bi bi-calendar4-week"></i></div>
+						calendar
+					</button>
+					<button class="sidebar-button {selected === Tasks ? "active" : ""}" on:click={() => selected = Tasks}> 
+						<div class="sidebar-icon-container"><i class="bi bi-check2-circle"></i></div>
+						tasks
+					</button>
+					<button class="sidebar-button {selected === Events ? "active" : ""}" on:click={() => selected = Events}>
+						<div class="sidebar-icon-container"><i class="bi bi-calendar4-event"></i></div>
+						events
+					</button>
+					<button class="sidebar-button {selected === Reminders ? "active" : ""}" on:click={() => selected = Reminders}>
+						<div class="sidebar-icon-container"><i class="bi bi-bell"></i></div>
+						reminders
+					</button>
+
+					<hr>
+					{#each lists as list, index}
+						<button class="sidebar-button {selected === Lists && selectedIndex === index ? "active" : ""}" on:click={() => selectList(index)}>
+							<div class="sidebar-icon-container"><i class="bi bi-list"></i></div>
+							<div class="sidebar-button-text">{list.name}</div>
+						</button>
+					{/each}
+					<div id="indicator"></div>
+				</div>
+			</div>
+
+			<button id="new-list-button" on:click={() => createList()}>
+				<div class="sidebar-icon-container"><i class="bi bi-plus"></i></div>
+				new list
+			</button>
+		</div>
+		
+		<svelte:component 
+			this={selected}
+			list={selectedList}
+			selectedIndex={selectedIndex}
+			username={user.displayName}	
+			on:deleteList={(event) => deleteList(event.detail.index)}
+			bind:this={child}/>
+	{:else}
+		<div id="login-container">
+			<h2 id="login-title">welcome to reorganize!</h2>
+			<button on:click={login} id="login-button" class="outside-button text">
+				<div class="login-icon-container"><i class="bi bi-google"></i></div>
+				<div class="login-button-text">sign in with google</div>
+			</button>
+		</div>
+	{/if}
 </main>
