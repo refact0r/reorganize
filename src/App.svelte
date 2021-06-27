@@ -14,7 +14,6 @@
 	import { fly } from 'svelte/transition';
 
 	let username = "refact0r";
-	let uid = "TGSdllf5Kac83Y1EC5y1";
 	let user;
 	// user = "hi";
 	let child;
@@ -23,44 +22,46 @@
 	let lists = [];
 	$: selectedList = lists[selectedIndex];
 
-	//listen for list changes
-	db.collection("lists")
-		.where("uid", "==", uid)
-		.orderBy("created")
-		.onSnapshot((snapshot) => {
-			lists = snapshot.docs.map((doc, index) => {
-				let item;
-				if (index < lists.length) {
-					item = {
-						id: doc.id,
-						...doc.data(),
-						tasks: lists[index].tasks,
-						unsubscribe: lists[index].unsubscribe
+	//create listener for list changes
+	function loadLists() {
+		db.collection("lists")
+			.where("uid", "==", user.uid)
+			.orderBy("created")
+			.onSnapshot((snapshot) => {
+				lists = snapshot.docs.map((doc, index) => {
+					let item;
+					if (index < lists.length) {
+						item = {
+							id: doc.id,
+							...doc.data(),
+							tasks: lists[index].tasks,
+							unsubscribe: lists[index].unsubscribe
+						}
+					} else {
+						item = {
+							id: doc.id,
+							...doc.data(),
+							tasks: [],
+							unsubscribe: db.collection("tasks")
+								.where("list_id", "==", doc.id)
+								.orderBy("created")
+								.onSnapshot((snapshot) => {
+									item.tasks = snapshot.docs.map((doc) => ({
+										id: doc.id,
+										...doc.data(),
+									}));
+									if (index === selectedIndex) {
+										selectedList = lists[selectedIndex];
+									}
+								})
+						}
 					}
-				} else {
-					item = {
-						id: doc.id,
-						...doc.data(),
-						tasks: [],
-						unsubscribe: db.collection("tasks")
-							.where("list_id", "==", doc.id)
-							.orderBy("created")
-							.onSnapshot((snapshot) => {
-								item.tasks = snapshot.docs.map((doc) => ({
-									id: doc.id,
-									...doc.data(),
-								}));
-								if (index === selectedIndex) {
-									selectedList = lists[selectedIndex];
-								}
-							})
-					}
-				}
-				return item;
+					return item;
+				});
+				updateIndicatorStyle();
+				console.log("Lists updated: ", lists);
 			});
-			updateIndicatorStyle();
-			console.log("Lists updated: ", lists);
-		});
+	}
 
 	//creates a new list
 	function createList() {
@@ -117,6 +118,7 @@
 					}
 				});
 			user = authUser;
+			loadLists();
 		}
 	});
 
