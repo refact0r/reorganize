@@ -54,6 +54,15 @@
 </svelte:head>
 
 <style>
+    #page {
+        display: flex;
+        flex-direction: column;
+    }
+
+    #page-inner {
+        height: 100%;
+    }
+
     #page-title {
         margin: 0 2rem 0 0;
         width: 100%;
@@ -78,23 +87,61 @@
         margin: 0 0 2rem 0;
     }
 
-    .outside-button {
-        margin: 0 0 0 0.4rem;
+    #new-task-container {
+        display: flex;
+        flex-shrink: 0;
+    }
+
+    #new-task-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 3rem;
+        height: 3rem;
+        margin-right: 1rem;
+    }
+
+    #new-task-button .bi {
+        line-height: 3rem;
+    }
+
+    .bi-plus {
+        font-size: 2.2em;
+    }
+
+    #new-task-input {
+        background: none;
+        outline: none;
+        border: none;
+        border-bottom: 2px solid var(--sub-color);
+        font-family: inherit;
+        font-size: inherit;
+        font-weight: inherit;
+        color: inherit;
+        width: 100%;
     }
 </style>
 
 {#if list}
     <div id="page">
-        <div id="title-bar">
-            <input id="page-title"
-                value={name}
-                placeholder="Enter list name..."
-                on:change={event => renameList(event)} 
-                on:keydown={event => deselectOnEnter(event)}>
-            <button class="outside-button icon" on:click={() => deleteList()}><i class="bi bi-trash"></i></button>
+        <div id="page-inner">
+            <div id="title-bar">
+                <input id="page-title"
+                    value={name}
+                    placeholder="Enter list name..."
+                    on:change={event => renameList(event)} 
+                    on:keydown={event => deselectOnEnter(event)}>
+                <button class="button outside icon" on:click={() => deleteList()}><i class="bi bi-trash"></i></button>
+            </div>
+            {#each list.tasks as task}
+                <div class="task glass-bg"><button class="task-complete-button"></button>{task.name}</div>
+            {/each}
         </div>
-        {#each list.tasks as task}
-            <div class="task glass-bg"><button class="task-complete-button"></button>{task.name}</div>
-        {/each}
+        <div id="new-task-container">
+            <button id="new-task-button" class="button outside"><i class="bi bi-plus"></i></button>            
+            <input id="new-task-input"
+                value=""
+                placeholder="Enter task name...">
+        </div>
     </div>
 {/if}
