@@ -15,7 +15,6 @@
 
 	let username = "refact0r";
 	let user;
-	// user = "hi";
 	let child;
 	let selected = Home;
 	let selectedIndex = 0;
@@ -69,7 +68,7 @@
 			.add({
 				name: "new list",
 				created: firebase.firestore.FieldValue.serverTimestamp(),
-				uid: uid
+				uid: user.uid
 			}).then((docRef) => {
 				selectList(lists.length - 1);
 				tick().then(() => child.focusInput());
@@ -104,20 +103,21 @@
 	auth.onAuthStateChanged((authUser) => {
 		console.log('auth state changed');
 		if (authUser) {
+			user = authUser;
 			db.collection('users')
-				.doc(authUser.uid)
+				.doc(user.uid)
 				.get()
 				.then((docSnapshot) => {
 					if (!docSnapshot.exists) {
-						console.log(authUser.uid);
+						console.log(user.uid);
 						db.collection('users')
-							.doc(authUser.uid)
+							.doc(user.uid)
 							.set({
+								name: user.displayName,
 								created: firebase.firestore.FieldValue.serverTimestamp(),
 							});
 					}
 				});
-			user = authUser;
 			loadLists();
 		}
 	});
@@ -249,14 +249,6 @@
 	.bi {
 		color: var(--sub-color);
 		transition: 0.2s ease-out;
-	}
-
-	.bi-check2-circle {
-		font-size: 1.4em;
-	}
-
-	.bi-plus {
-		font-size: 1.6em;
 	}
 
 	#indicator {
