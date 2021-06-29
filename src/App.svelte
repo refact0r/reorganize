@@ -6,7 +6,6 @@
 	import Events from "./Events.svelte";
 	import Reminders from "./Reminders.svelte";
 	import Lists from "./Lists.svelte";
-	import { onMount } from 'svelte';
 	import { tick } from 'svelte'
 	import firebase from 'firebase/app';
     import { db } from './firebase';
@@ -66,12 +65,12 @@
 	function createList() {
 		db.collection("lists")
 			.add({
+				uid: user.uid,
 				name: "new list",
-				created: firebase.firestore.FieldValue.serverTimestamp(),
-				uid: user.uid
+				created: firebase.firestore.FieldValue.serverTimestamp()
 			}).then((docRef) => {
 				selectList(lists.length - 1);
-				tick().then(() => child.clearName());
+				tick().then(() => child.clearListName());
 				console.log("List added with id: ", docRef.id);
 			});
 	}
@@ -402,13 +401,14 @@
 			this={selected}
 			list={selectedList}
 			selectedIndex={selectedIndex}
-			username={user.displayName}	
+			username={user.displayName}
+			userId={user.uid}
 			on:deleteList={(event) => deleteList(event.detail.index)}
 			bind:this={child}/>
 	{:else}
 		<div id="login-container" class="glass-bg">
 			<h2 id="login-title">welcome to reorganize!</h2>
-			<button on:click={login} id="login-button" class="button inside">
+			<button on:click={login} id="login-button" class="button inside text">
 				<div class="login-icon-container"><i class="bi bi-google"></i></div>
 				<div class="login-button-text">sign in with google</div>
 			</button>
