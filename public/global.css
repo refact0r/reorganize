@@ -53,6 +53,17 @@ button:focus {
 	outline: none;
 }
 
+input {
+	padding: 0;
+	background: none;
+	outline: none;
+	border: none;
+	font-family: inherit;
+	font-size: inherit;
+	font-weight: inherit;
+	color: inherit;
+}
+
 .glass-bg {
 	background: var(--bg-color);
 	backdrop-filter: var(--blur);
