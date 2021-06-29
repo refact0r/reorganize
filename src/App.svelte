@@ -13,7 +13,7 @@
 	import { auth, googleProvider } from './firebase';
 	import { fly } from 'svelte/transition';
 
-	let username = "refact0r";
+	// initialize variables
 	let user;
 	let child;
 	let selected = Home;
@@ -21,7 +21,7 @@
 	let lists = [];
 	$: selectedList = lists[selectedIndex];
 
-	//create listener for list changes
+	// create listener for list changes
 	function loadLists() {
 		db.collection("lists")
 			.where("uid", "==", user.uid)
@@ -29,7 +29,7 @@
 			.onSnapshot((snapshot) => {
 				lists = snapshot.docs.map((doc, index) => {
 					let item;
-					if (index < lists.length) {
+					if (index < lists.length && doc.id == lists[index].id) {
 						item = {
 							id: doc.id,
 							...doc.data(),
@@ -62,7 +62,7 @@
 			});
 	}
 
-	//creates a new list
+	// create a new list
 	function createList() {
 		db.collection("lists")
 			.add({
@@ -71,12 +71,12 @@
 				uid: user.uid
 			}).then((docRef) => {
 				selectList(lists.length - 1);
-				tick().then(() => child.focusInput());
+				tick().then(() => child.clearName());
 				console.log("List added with id: ", docRef.id);
 			});
 	}
 
-	//deletes a list
+	// delete a list
 	function deleteList(index) {
 		let id = lists[index].id;
 		if (index > 0) {
@@ -93,13 +93,13 @@
 			});
     }
 	
-	//selects a list
+	// select a list
 	function selectList(index) {
 		selected = Lists;
 		selectedIndex = index;
 	}
 
-	//check for auth changes
+	// check for auth changes
 	auth.onAuthStateChanged((authUser) => {
 		console.log('auth state changed');
 		if (authUser) {
@@ -122,24 +122,24 @@
 		}
 	});
 
-	//login
+	// log in
 	function login() {
         auth.signInWithPopup(googleProvider);
     }
 
-	//logout
+	// log out
 	function logout() {
 		auth.signOut();
 	}
 
-	//initialize style vars
+	// initialize style vars
 	let css = "";
 	let n = 10;
 	let distance = 22;
 	let style = document.createElement("style");
 	document.head.appendChild(style);
 
-	//updates indicator style
+	// update indicator style
 	function updateIndicatorStyle() {
 		css = "";
 		n = 10;
