@@ -67,6 +67,28 @@
         }
     }
 
+    // delete a task
+    function deleteTask(id) {
+        db.collection("tasks")
+            .doc(id)
+            .delete()
+            .then(() => {
+                console.log("Task deleted with id: ", id);
+            });
+    }
+
+    // complete a task
+    function completeTask(id, completed) {
+        console.log(completed);
+        db.collection("tasks")
+            .doc(id)
+            .update({
+                completed: !completed
+            }).then(() => {
+                console.log("Task completed with id: ", id);
+            });
+    }
+
     // blur if enter was pressed
     function blurOnEnter(event) {
         if (event.keyCode === 13) {
@@ -125,15 +147,7 @@
     }
 
     #new-task-button {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 0.5rem 0 0.5rem;
-    }
-
-    #new-task-button .bi {
-        /* line-height: 3rem; */
-        color: var(--sub-color);
+        margin: 0 0.4rem 0 0.6rem;
     }
 
     /* .bi-plus {
@@ -156,10 +170,32 @@
                     on:keydown={event => blurOnEnter(event)}>
                 <button class="button outside icon" on:click={() => deleteList()}><i class="bi bi-trash"></i></button>
             </div>
+
             {#each list.tasks as task}
-                <div class="task glass-bg"><button class="task-complete-button"></button>{task.name}</div>
+                {#if !task.completed}
+                    <div class="task glass-bg">
+                        <button class="button inside icon task-complete" on:click={() => completeTask(task.id, task.completed)}></button>
+                        <div class="task-text">{task.name}</div>
+                        <button class="button inside icon task-delete" on:click={() => deleteTask(task.id)}><i class="bi bi-x"></i></button>   
+                    </div>
+                {/if}
+            {/each}
+
+            {#if list.tasks.find(task => task.completed)}
+                <h3>completed</h3>
+            {/if}
+
+            {#each list.tasks as task}
+                {#if task.completed}
+                    <div class="task glass-bg completed">
+                        <button class="button inside icon task-complete" on:click={() => completeTask(task.id, task.completed)}></button>
+                        <div class="task-text">{task.name}</div>
+                        <button class="button inside icon task-delete" on:click={() => deleteTask(task.id)}><i class="bi bi-x"></i></button>   
+                    </div>
+                {/if}
             {/each}
         </div>
+
         <div id="new-task-container" class="glass-bg">
             <button id="new-task-button" class="button inside icon" on:click={() => createTask()}><i class="bi bi-plus"></i></button>            
             <input id="new-task-input"
