@@ -73,6 +73,7 @@ input {
 }
 
 .bi {
+	display: flex;
 	font-size: 1.2em;
 }
 
@@ -84,19 +85,23 @@ input {
 	font-size: 1.8em;
 }
 
+.bi-x {
+	font-size: 1.8em;
+}
+
 .button {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	transition: transform 0.05s ease-out;
+	transition: 0.05s ease-out;
 	border-radius: 0.6rem;
+	flex-shrink: 0;
 }
 
 .button.outside.icon {
 	border-radius: 1.2rem;
 	width: 2.4rem;
 	height: 2.4rem;
-	flex-shrink: 0;
 }
 	
 .button.outside.text {
@@ -105,15 +110,21 @@ input {
 }
 
 .button.inside.icon {
-	width: 2.4rem;
-	height: 2.4rem;
+	color: var(--sub-color);
+	width: 2rem;
+	height: 2rem;
+	border-radius: 1rem;
 }
 
 .button.inside.text {
 	background: var(--bg-color);
 }
 
-.button.outside:hover, .button.inside.icon:hover {
+.button.outside:hover {
+	background: hsla(0, 0%, 100%, 0.1);
+}
+
+.button.inside.icon:hover {
 	background: hsla(0, 0%, 100%, 0.1);
 }
 
@@ -124,27 +135,39 @@ input {
 .button:active {
 	transform: scale(0.95);
 }
+
+.button.icon:active {
+	transform: scale(0.9);
+}
     
 .task {
 	display: flex;
-	padding: 0 1rem;
+	padding: 0 0.7rem 0 1rem;
 	height: 3rem;
 	margin-bottom: 0.3rem;
 	align-items: center;
 }
 
-.task-complete-button {
-	background: none;
-	margin: 0 1rem 0 0;
-	padding: 0;
-	width: 1.4rem;
-	height: 1.4rem;
-	border-radius: 2rem;
-	border: 2px solid var(--sub-color);
+.task:hover .button.inside.icon.task-delete {
+	display: flex;
 }
 
-.task-complete-button:hover {
-	background: hsla(0, 0%, 100%, 0.1);
+.button.inside.icon.task-complete {
+	margin: 0 1rem 0 0;
+	width: 1.4rem;
+	height: 1.4rem;
+	border-radius: 0.7rem;
+	border: 2px solid var(--sub-color);
+	transform: none;
+}
+
+.button.inside.icon.task-delete {
+	display: none;
+	margin-left: auto;
+}
+
+.task.completed .task-text {
+	text-decoration: line-through;
 }
 
 #page {
