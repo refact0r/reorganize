@@ -1,5 +1,6 @@
 <script>
     import { createEventDispatcher } from 'svelte';
+	import { fade } from 'svelte/transition';
 	import firebase from 'firebase/app';
     import { db } from './firebase';
 
@@ -15,6 +16,7 @@
     let listName = list.name;
     let prevName = listName;
     let taskName = "";
+    let selectedTask;
 
     // only change name when list.name is different
     $: if (list.name != prevName) {
@@ -68,25 +70,35 @@
     }
 
     // delete a task
-    function deleteTask(id) {
+    function deleteTask(task) {
         db.collection("tasks")
-            .doc(id)
+            .doc(task.id)
             .delete()
             .then(() => {
-                console.log("Task deleted with id: ", id);
+                console.log("Task deleted with id: ", task.id);
             });
     }
 
     // complete a task
-    function completeTask(id, completed) {
-        console.log(completed);
+    function completeTask(task) {
+        console.log(!task.completed);
         db.collection("tasks")
-            .doc(id)
+            .doc(task.id)
             .update({
-                completed: !completed
+                completed: !task.completed
             }).then(() => {
-                console.log("Task completed with id: ", id);
+                console.log("Task completed with id: ", task.id);
             });
+    }
+
+    // select a task
+    function selectTask(index) {
+        console.log("selected: ", index);
+        if (selectedTask != null && list.tasks[selectedTask].id === list.tasks[index].id) {
+            selectedTask = null;
+        } else {
+            selectedTask = index;
+        }
     }
 
     // blur if enter was pressed
@@ -171,12 +183,12 @@
                 <button class="button outside icon" on:click={() => deleteList()}><i class="bi bi-trash"></i></button>
             </div>
 
-            {#each list.tasks as task}
+            {#each list.tasks as task, index}
                 {#if !task.completed}
-                    <div class="task glass-bg">
-                        <button class="button inside icon task-complete" on:click={() => completeTask(task.id, task.completed)}></button>
+                    <div class="task glass-bg {selectedTask === index ? "selected" : ""}" on:click|self={() => selectTask(index)}>
+                        <button class="button inside icon task-complete" on:click={() => completeTask(task)}></button>
                         <div class="task-text">{task.name}</div>
-                        <button class="button inside icon task-delete" on:click={() => deleteTask(task.id)}><i class="bi bi-x"></i></button>   
+                        <button class="button inside icon task-delete" on:click={() => deleteTask(task)}><i class="bi bi-x"></i></button>   
                     </div>
                 {/if}
             {/each}
@@ -185,12 +197,12 @@
                 <h3>completed</h3>
             {/if}
 
-            {#each list.tasks as task}
+            {#each list.tasks as task, index}
                 {#if task.completed}
-                    <div class="task glass-bg completed">
-                        <button class="button inside icon task-complete" on:click={() => completeTask(task.id, task.completed)}></button>
+                    <div class="task glass-bg completed {selectedTask === index ? "selected" : ""}" on:click|self={() => selectTask(index)}>
+                        <button class="button inside icon task-complete" on:click={() => completeTask(task)}></button>
                         <div class="task-text">{task.name}</div>
-                        <button class="button inside icon task-delete" on:click={() => deleteTask(task.id)}><i class="bi bi-x"></i></button>   
+                        <button class="button inside icon task-delete" on:click={() => deleteTask(task)}><i class="bi bi-x"></i></button>   
                     </div>
                 {/if}
             {/each}
@@ -203,5 +215,14 @@
                 placeholder="Enter task name..."
                 on:keydown={event => createOnEnter(event)}>
         </div>
+    </div>
+
+    <div id="details-sidebar" class="{selectedTask != null ? "expanded" : ""} glass-bg">
+        {#if selectedTask != null}
+            <div id="details-sidebar-inner" in:fade="{{delay: 0, duration: 200}}" out:fade="{{delay: 0, duration: 100}}">
+                <button class="button inside icon task-complete" on:click={() => completeTask(selectedTask)}></button>
+                <div>{list.tasks[selectedTask].name}</div>
+            </div>
+        {/if}
     </div>
 {/if}

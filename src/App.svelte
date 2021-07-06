@@ -144,7 +144,7 @@
 		n = 10;
 		distance = 22;
 		for (let i = 0; i < lists.length; i++) {
-			css += `.sidebar-button:nth-child(${n}).active ~ #indicator { transform: translateY(${distance}rem); }`;
+			css += `.sidebar-button:nth-child(${n}).selected ~ #indicator { transform: translateY(${distance}rem); }`;
 			n++;
 			distance += 3;
 		}
@@ -155,7 +155,8 @@
 
 <style>
 	main {
-		display: flex;
+		display: grid;
+		grid-template-columns: auto 1fr auto;
 		height: 100vh;
 		overflow: hidden;
 		background: var(--bg-picture);
@@ -178,8 +179,8 @@
 	}
 	
 	#sidebar {
+		grid-column: 1;
 		display: flex;
-		flex-shrink: 0;
 		flex-direction: column;
 		height: 100vh;
 		z-index: 10;
@@ -237,11 +238,11 @@
 		margin-right: 1rem;
 	}
 	
-	.active {
+	.selected {
 		font-weight: 500;
 	}
 	
-	.active .bi {
+	.selected .bi {
 		color: var(--font-color) !important;
 	}
 	
@@ -264,23 +265,23 @@
 		transition: 0.2s ease-out;
 	}
 	
-	.sidebar-button:nth-child(4).active ~ #indicator {
+	.sidebar-button:nth-child(4).selected ~ #indicator {
 		transform: translateY(5rem);
 	}
 	
-	.sidebar-button:nth-child(5).active ~ #indicator {
+	.sidebar-button:nth-child(5).selected ~ #indicator {
 		transform: translateY(8rem);
 	}
 
-	.sidebar-button:nth-child(6).active ~ #indicator {
+	.sidebar-button:nth-child(6).selected ~ #indicator {
 		transform: translateY(11rem);
 	}
 
-	.sidebar-button:nth-child(7).active ~ #indicator {
+	.sidebar-button:nth-child(7).selected ~ #indicator {
 		transform: translateY(14rem);
 	}
 
-	.sidebar-button:nth-child(8).active ~ #indicator {
+	.sidebar-button:nth-child(8).selected ~ #indicator {
 		transform: translateY(17rem);
 	}
 	
@@ -315,6 +316,7 @@
 	}
 
 	#login-container {
+		grid-column: 2;
 		width: auto;
 		height: auto;
 		margin: auto;
@@ -347,42 +349,42 @@
 
 <main>
 	{#if user}
-		<div id="sidebar" class="glass-bg" transition:fly="{{ x: -200, duration: 1000 }}">
+		<div id="sidebar" class="glass-bg">
 			<div id="sidebar-inner-scroll">
 				<div id="sidebar-inner">
 					<h2 id="sidebar-title">reorganize</h2>
 
-					<button class="sidebar-button {selected === Profile ? "active" : ""}" on:click={() => selected = Profile}>
+					<button class="sidebar-button {selected === Profile ? "selected" : ""}" on:click={() => selected = Profile}>
 						<div class="sidebar-icon-container"><i class="bi bi-person"></i></div>
 						{user.displayName}
 					</button>
 
 					<hr>
 
-					<button class="sidebar-button {selected === Home ? "active" : ""}" on:click={() => selected = Home}>
+					<button class="sidebar-button {selected === Home ? "selected" : ""}" on:click={() => selected = Home}>
 						<div class="sidebar-icon-container"><i class="bi bi-house"></i></div>
 						home
 					</button>
-					<button class="sidebar-button {selected === Calendar ? "active" : ""}" on:click={() => selected = Calendar}>
+					<button class="sidebar-button {selected === Calendar ? "selected" : ""}" on:click={() => selected = Calendar}>
 						<div class="sidebar-icon-container"><i class="bi bi-calendar4-week"></i></div>
 						calendar
 					</button>
-					<button class="sidebar-button {selected === Tasks ? "active" : ""}" on:click={() => selected = Tasks}> 
+					<button class="sidebar-button {selected === Tasks ? "selected" : ""}" on:click={() => selected = Tasks}> 
 						<div class="sidebar-icon-container"><i class="bi bi-check2-circle"></i></div>
 						tasks
 					</button>
-					<button class="sidebar-button {selected === Events ? "active" : ""}" on:click={() => selected = Events}>
+					<button class="sidebar-button {selected === Events ? "selected" : ""}" on:click={() => selected = Events}>
 						<div class="sidebar-icon-container"><i class="bi bi-calendar4-event"></i></div>
 						events
 					</button>
-					<button class="sidebar-button {selected === Reminders ? "active" : ""}" on:click={() => selected = Reminders}>
+					<button class="sidebar-button {selected === Reminders ? "selected" : ""}" on:click={() => selected = Reminders}>
 						<div class="sidebar-icon-container"><i class="bi bi-bell"></i></div>
 						reminders
 					</button>
 
 					<hr>
 					{#each lists as list, index}
-						<button class="sidebar-button {selected === Lists && selectedIndex === index ? "active" : ""}" on:click={() => selectList(index)}>
+						<button class="sidebar-button {selected === Lists && selectedIndex === index ? "selected" : ""}" on:click={() => selectList(index)}>
 							<div class="sidebar-icon-container"><i class="bi bi-list"></i></div>
 							<div class="sidebar-button-text">{list.name}</div>
 						</button>
