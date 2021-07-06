@@ -3,7 +3,7 @@
 	--sub-color: hsla(0, 0%, 100%, 0.3);
 	--bg-color: hsla(0, 0%, 100%, 0.1);
 	--border: 0px solid hsla(0, 0%, 100%, 0); 
-	--box-shadow: 0.2rem 0.2rem 1rem hsla(0, 0%, 0%, 0.4);
+	--box-shadow: 0.2rem 0.2rem 1rem hsla(0, 0%, 0%, 0.6);
 	--blur: blur(15px);
 	--bg-filter: brightness(0.6) contrast(0.9) saturate(1.2);
 	--bg-picture: url("/leaves.jpg");
@@ -146,6 +146,8 @@ input {
 	height: 3rem;
 	margin-bottom: 0.3rem;
 	align-items: center;
+	user-select: none;
+	transition: 0.05s ease-out;
 }
 
 .task:hover .button.inside.icon.task-delete {
@@ -170,9 +172,40 @@ input {
 	text-decoration: line-through;
 }
 
+.task:hover {
+	cursor: pointer;
+}
+
+.task:active:not(:focus-within) {
+	transform: scale(0.99);
+}
+
+.task.selected {
+	background: hsla(0, 0%, 100%, 0.2);
+}
+
 #page {
+	grid-column: 2;
 	padding: 2rem 3rem 2rem 3rem;
 	height: 100vh;
 	width: 100%;
 	z-index: 5;
+}
+
+#details-sidebar {
+	grid-column: 3;
+	height: 100vh;
+	z-index: 10;
+	width: 0;
+	border-radius: 0;
+	transition: 0.2s ease-out;
+}
+
+#details-sidebar.expanded {
+	width: 20rem;
+}
+
+#details-sidebar-inner {
+	width: 20rem;
+	padding: 2rem;
 }
