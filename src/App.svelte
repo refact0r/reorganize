@@ -16,9 +16,9 @@
 	let user;
 	let child;
 	let selected = Home;
-	let selectedIndex = 0;
+	let selectedListIndex = 0;
 	let lists = [];
-	$: selectedList = lists[selectedIndex];
+	$: selectedList = lists[selectedListIndex];
 
 	// create listener for list changes
 	function loadLists() {
@@ -44,13 +44,14 @@
 								.where("list_id", "==", doc.id)
 								.orderBy("created")
 								.onSnapshot((snapshot) => {
-									item.tasks = snapshot.docs.map((doc) => ({
+									lists[index].tasks = snapshot.docs.map((doc) => ({
 										id: doc.id,
 										...doc.data(),
 									}));
-									if (index === selectedIndex) {
-										selectedList = lists[selectedIndex];
+									if (index === selectedListIndex) {
+										selectedList = lists[selectedListIndex];
 									}
+									console.log("Tasks updated: ", lists[index].id, lists[index].tasks);
 								})
 						}
 					}
@@ -95,7 +96,7 @@
 	// select a list
 	function selectList(index) {
 		selected = Lists;
-		selectedIndex = index;
+		selectedListIndex = index;
 	}
 
 	// check for auth changes
@@ -384,7 +385,7 @@
 
 					<hr>
 					{#each lists as list, index}
-						<button class="sidebar-button {selected === Lists && selectedIndex === index ? "selected" : ""}" on:click={() => selectList(index)}>
+						<button class="sidebar-button {selected === Lists && selectedListIndex === index ? "selected" : ""}" on:click={() => selectList(index)}>
 							<div class="sidebar-icon-container"><i class="bi bi-list"></i></div>
 							<div class="sidebar-button-text">{list.name}</div>
 						</button>
@@ -402,7 +403,7 @@
 		<svelte:component 
 			this={selected}
 			list={selectedList}
-			selectedIndex={selectedIndex}
+			listIndex={selectedListIndex}
 			username={user.displayName}
 			userId={user.uid}
 			on:deleteList={(event) => deleteList(event.detail.index)}

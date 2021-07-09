@@ -8,20 +8,27 @@
     const dispatch = createEventDispatcher();
 
     // get props
-    export let selectedIndex;
     export let list;
+    export let listIndex;
     export let userId;
     
     // initialize variables
     let listName = list.name;
-    let prevName = listName;
+    let prevTaskName = listName;
     let taskName = "";
     let selectedTask;
+    let selectedTaskId;
 
     // only change name when list.name is different
-    $: if (list.name != prevName) {
+    $: if (list.name != prevTaskName) {
         listName = list.name;
-        prevName = listName;
+        prevTaskName = listName;
+    }
+
+    $: if (selectedTask != null) {
+        if (selectedTask >= list.tasks.length || list.tasks[selectedTask].id != selectedTaskId) {
+            selectedTask = null;
+        }
     }
 
     // focus on page title and clears name
@@ -33,7 +40,7 @@
     // send event dispatch to delete current list
     function deleteList() {
         dispatch('deleteList', {
-            index: selectedIndex
+            index: listIndex
         });
     }
 
@@ -98,6 +105,7 @@
             selectedTask = null;
         } else {
             selectedTask = index;
+            selectedTaskId = list.tasks[selectedTask].id;
         }
     }
 
@@ -162,12 +170,12 @@
         margin: 0 0.4rem 0 0.6rem;
     }
 
-    /* .bi-plus {
-        font-size: 2.2em;
-    } */
-
     #new-task-input {
         width: 100%;
+    }
+
+    #details-task {
+        display: flex;
     }
 </style>
 
@@ -220,8 +228,10 @@
     <div id="details-sidebar" class="{selectedTask != null ? "expanded" : ""} glass-bg">
         {#if selectedTask != null}
             <div id="details-sidebar-inner" in:fade="{{delay: 0, duration: 200}}" out:fade="{{delay: 0, duration: 100}}">
-                <button class="button inside icon task-complete" on:click={() => completeTask(selectedTask)}></button>
-                <div>{list.tasks[selectedTask].name}</div>
+                <div id="details-task">
+                    <button class="button inside icon task-complete" on:click={() => completeTask(list.tasks[selectedTask])}></button>
+                    <div>{list.tasks[selectedTask].name}</div>
+                </div>
             </div>
         {/if}
     </div>
