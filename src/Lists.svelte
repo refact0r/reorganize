@@ -18,6 +18,9 @@
     let taskName = "";
     let selectedTask;
     let selectedTaskId;
+    let inputTaskName = false;
+
+    $: console.log(inputTaskName);
 
     // only change name when list.name is different
     $: if (list.name != prevTaskName) {
@@ -120,7 +123,7 @@
                     console.log("Task renamed with id: ", id);
                 });
         } else {
-            document.getElementById("details-task-input").value = list.tasks[selectedTask].name;
+            inputTaskName = false;
         }
     }
 
@@ -131,11 +134,22 @@
         }
     }
 
+    function taskBlurOnEnter(event) {
+        if (event.keyCode === 13) {
+            inputTaskName = false;
+        }
+    }
+
     // create task if enter was pressed
     function createOnEnter(event) {
         if (event.keyCode === 13) {
             createTask();
         }
+    }
+
+    // focus element
+    function focus(element) {
+        element.focus();
     }
 </script>
 
@@ -200,6 +214,10 @@
     #details-task-input:focus {
         border-bottom: 2px solid var(--sub-color);
     }
+
+    #details-task-name {
+        word-break: break-all;
+    }
 </style>
 
 {#if list}
@@ -253,12 +271,18 @@
             <div id="details-sidebar-inner" in:fade="{{delay: 0, duration: 200}}" out:fade="{{delay: 0, duration: 100}}">
                 <div id="details-task">
                     <button class="button inside icon task-complete" on:click={() => completeTask(list.tasks[selectedTask])}></button>
-                    <input
-                        id="details-task-input"
-                        value={list.tasks[selectedTask].name}
-                        placeholder="Enter task name..."
-                        on:change={event => renameTask(event.target.value, list.tasks[selectedTask].id)} 
-                        on:keydown={event => blurOnEnter(event)}>
+                    {#if inputTaskName}
+                        <input
+                            id="details-task-input"
+                            value={list.tasks[selectedTask].name}
+                            placeholder="Enter task name..."
+                            on:change={event => renameTask(event.target.value, list.tasks[selectedTask].id)} 
+                            on:keydown={event => blurOnEnter(event)}
+                            on:focusout={() => inputTaskName = false}
+                            use:focus>
+                    {:else}
+                        <div id="details-task-name" on:click={() => inputTaskName = true}>{list.tasks[selectedTask].name}</div>
+                    {/if}
                 </div>
             </div>
         {/if}
