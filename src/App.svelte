@@ -51,7 +51,7 @@
 									if (index === selectedListIndex) {
 										selectedList = lists[selectedListIndex];
 									}
-									console.log("Tasks updated: ", lists[index].id, lists[index].tasks);
+									console.log("Tasks updated: ", lists[index].id);
 								})
 						}
 					}

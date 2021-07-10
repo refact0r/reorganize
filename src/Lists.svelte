@@ -45,12 +45,12 @@
     }
 
     // rename current list
-    function renameList(event) {
-        if (event.target.value) {
+    function renameList(name) {
+        if (name) {
             db.collection("lists")
                 .doc(list.id)
                 .update({
-                    name: event.target.value
+                    name: name
                 }).then(() => {
                     console.log("List renamed with id: ", list.id);
                 });
@@ -106,6 +106,21 @@
         } else {
             selectedTask = index;
             selectedTaskId = list.tasks[selectedTask].id;
+        }
+    }
+
+    // rename a task
+    function renameTask(name, id) {
+        if (name) {
+            db.collection("tasks")
+                .doc(id)
+                .update({
+                    name: name
+                }).then(() => {
+                    console.log("Task renamed with id: ", id);
+                });
+        } else {
+            document.getElementById("details-task-input").value = list.tasks[selectedTask].name;
         }
     }
 
@@ -177,6 +192,14 @@
     #details-task {
         display: flex;
     }
+
+    #details-task-input {
+        width: 100%;
+    }
+
+    #details-task-input:focus {
+        border-bottom: 2px solid var(--sub-color);
+    }
 </style>
 
 {#if list}
@@ -186,7 +209,7 @@
                 <input id="page-title"
                     value={listName}
                     placeholder="Enter list name..."
-                    on:change={event => renameList(event)} 
+                    on:change={event => renameList(event.target.value)} 
                     on:keydown={event => blurOnEnter(event)}>
                 <button class="button outside icon" on:click={() => deleteList()}><i class="bi bi-trash"></i></button>
             </div>
@@ -195,7 +218,7 @@
                 {#if !task.completed}
                     <div class="task glass-bg {selectedTask === index ? "selected" : ""}" on:click|self={() => selectTask(index)}>
                         <button class="button inside icon task-complete" on:click={() => completeTask(task)}></button>
-                        <div class="task-text">{task.name}</div>
+                        <div class="task-text" on:click={() => selectTask(index)} >{task.name}</div>
                         <button class="button inside icon task-delete" on:click={() => deleteTask(task)}><i class="bi bi-x"></i></button>   
                     </div>
                 {/if}
@@ -209,7 +232,7 @@
                 {#if task.completed}
                     <div class="task glass-bg completed {selectedTask === index ? "selected" : ""}" on:click|self={() => selectTask(index)}>
                         <button class="button inside icon task-complete" on:click={() => completeTask(task)}></button>
-                        <div class="task-text">{task.name}</div>
+                        <div class="task-text" on:click={() => selectTask(index)}>{task.name}</div>
                         <button class="button inside icon task-delete" on:click={() => deleteTask(task)}><i class="bi bi-x"></i></button>   
                     </div>
                 {/if}
@@ -230,7 +253,12 @@
             <div id="details-sidebar-inner" in:fade="{{delay: 0, duration: 200}}" out:fade="{{delay: 0, duration: 100}}">
                 <div id="details-task">
                     <button class="button inside icon task-complete" on:click={() => completeTask(list.tasks[selectedTask])}></button>
-                    <div>{list.tasks[selectedTask].name}</div>
+                    <input
+                        id="details-task-input"
+                        value={list.tasks[selectedTask].name}
+                        placeholder="Enter task name..."
+                        on:change={event => renameTask(event.target.value, list.tasks[selectedTask].id)} 
+                        on:keydown={event => blurOnEnter(event)}>
                 </div>
             </div>
         {/if}
