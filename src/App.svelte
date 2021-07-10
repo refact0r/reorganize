@@ -6,7 +6,7 @@
 	import Events from "./Events.svelte";
 	import Reminders from "./Reminders.svelte";
 	import Lists from "./Lists.svelte";
-	import { tick } from 'svelte'
+	import { tick } from 'svelte';
 	import firebase from 'firebase/app';
     import { db } from './firebase';
 	import { auth, googleProvider } from './firebase';
