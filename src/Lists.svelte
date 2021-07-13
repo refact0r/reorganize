@@ -3,7 +3,7 @@
 	import { fade } from 'svelte/transition';
 	import firebase from 'firebase/app';
     import { db } from './firebase';
-    import { createTask } from './tasks';
+    import { createTask, deleteTask, completeTask } from './tasks';
 
     // event dispatcher
     const dispatch = createEventDispatcher();
@@ -16,10 +16,13 @@
     // initialize variables
     let listName = list.name;
     let prevListName = listName;
-    let taskName = "";
-    let selectedTask;
-    let selectedTaskId;
+    let newTaskName = "";
     let inputTaskName = false;
+    let selectedTaskIndex;
+    let prevSelectedTaskId;
+
+    $: selectedTask = tasks[selectedTaskIndex];
+    $: tasks = list.tasks;
 
     // only change name when list.name is different
     $: if (list.name != prevListName) {
@@ -27,9 +30,10 @@
         prevListName = listName;
     }
 
-    $: if (selectedTask != null) {
-        if (selectedTask >= list.tasks.length || list.tasks[selectedTask].id != selectedTaskId) {
-            selectedTask = null;
+    // set selectedTaskIndex to null if a task was deleted
+    $: if (selectedTaskIndex != null) {
+        if (selectedTaskIndex >= tasks.length || tasks[selectedTaskIndex].id != prevSelectedTaskId) {
+            selectedTaskIndex = null;
         }
     }
 
@@ -61,36 +65,14 @@
         }
     }
 
-    // delete a task
-    function deleteTask(task) {
-        db.collection("tasks")
-            .doc(task.id)
-            .delete()
-            .then(() => {
-                console.log("Task deleted with id: ", task.id);
-            });
-    }
-
-    // complete a task
-    function completeTask(task) {
-        console.log(!task.completed);
-        db.collection("tasks")
-            .doc(task.id)
-            .update({
-                completed: !task.completed
-            }).then(() => {
-                console.log("Task completed with id: ", task.id);
-            });
-    }
-
     // select a task
     function selectTask(index) {
         console.log("selected: ", index);
-        if (selectedTask != null && list.tasks[selectedTask].id === list.tasks[index].id) {
-            selectedTask = null;
+        if (selectedTask != null && selectedTask.id === tasks[index].id) {
+            selectedTaskIndex = null;
         } else {
-            selectedTask = index;
-            selectedTaskId = list.tasks[selectedTask].id;
+            selectedTaskIndex = index;
+            prevSelectedTaskId = tasks[selectedTaskIndex].id;
         }
     }
 
@@ -119,7 +101,8 @@
     // create task if enter was pressed
     function createOnEnter(event) {
         if (event.keyCode === 13) {
-            createTask(userId, taskName);
+            createTask(userId, list.id, newTaskName);
+            newTaskName = "";
         }
     }
 
@@ -146,9 +129,6 @@
     }
 
     #page-title {
-        margin: 0 2rem 0 0;
-        width: 100%;
-        height: 3rem;
         font-weight: 700;
         font-size: 1.5em;
     }
@@ -208,35 +188,35 @@
                 <button class="button outside icon" on:click={() => deleteList()}><i class="bi bi-trash"></i></button>
             </div>
 
-            {#each list.tasks as task, index}
+            {#each tasks as task, index}
                 {#if !task.completed}
-                    <div class="task glass-bg {selectedTask === index ? "selected" : ""}" on:click|self={() => selectTask(index)}>
-                        <button class="button inside icon task-complete" on:click={() => completeTask(task)}></button>
+                    <div class="task glass-bg {selectedTaskIndex === index ? "selected" : ""}" on:click|self={() => selectTask(index)}>
+                        <button class="button inside icon task-complete" on:click={() => completeTask(task.id, task.completed)}></button>
                         <div class="task-text" on:click={() => selectTask(index)} >{task.name}</div>
-                        <button class="button inside icon task-delete" on:click={() => deleteTask(task)}><i class="bi bi-x"></i></button>   
+                        <button class="button inside icon task-delete" on:click={() => deleteTask(task.id)}><i class="bi bi-x"></i></button>   
                     </div>
                 {/if}
             {/each}
 
-            {#if list.tasks.find(task => task.completed)}
+            {#if tasks.find(task => task.completed)}
                 <h3>completed</h3>
             {/if}
 
-            {#each list.tasks as task, index}
+            {#each tasks as task, index}
                 {#if task.completed}
-                    <div class="task glass-bg completed {selectedTask === index ? "selected" : ""}" on:click|self={() => selectTask(index)}>
-                        <button class="button inside icon task-complete" on:click={() => completeTask(task)}></button>
+                    <div class="task glass-bg completed {selectedTaskIndex === index ? "selected" : ""}" on:click|self={() => selectTask(index)}>
+                        <button class="button inside icon task-complete" on:click={() => completeTask(task.id, task.completed)}></button>
                         <div class="task-text" on:click={() => selectTask(index)}>{task.name}</div>
-                        <button class="button inside icon task-delete" on:click={() => deleteTask(task)}><i class="bi bi-x"></i></button>   
+                        <button class="button inside icon task-delete" on:click={() => deleteTask(task.id)}><i class="bi bi-x"></i></button>   
                     </div>
                 {/if}
             {/each}
         </div>
 
         <div id="new-task-container" class="glass-bg">
-            <button id="new-task-button" class="button inside icon" on:click={() => createTask(userId, taskName), taskName = ""}><i class="bi bi-plus"></i></button>            
+            <button id="new-task-button" class="button inside icon" on:click={() => createTask(userId, list.id, newTaskName), newTaskName = ""}><i class="bi bi-plus"></i></button>            
             <input id="new-task-input"
-                bind:value={taskName}
+                bind:value={newTaskName}
                 placeholder="Enter task name..."
                 on:keydown={event => createOnEnter(event)}>
         </div>
@@ -246,18 +226,18 @@
         {#if selectedTask != null}
             <div id="details-sidebar-inner" in:fade="{{delay: 0, duration: 200}}" out:fade="{{delay: 0, duration: 100}}">
                 <div id="details-task">
-                    <button class="button inside icon task-complete" on:click={() => completeTask(list.tasks[selectedTask])}></button>
+                    <button class="button inside icon task-complete" on:click={() => completeTask(selectedTask.id, selectedTask.completed)}></button>
                     {#if inputTaskName}
                         <input
                             id="details-task-input"
-                            value={list.tasks[selectedTask].name}
+                            value={selectedTask.name}
                             placeholder="Enter task name..."
-                            on:change={event => renameTask(event.target.value, list.tasks[selectedTask].id)} 
+                            on:change={event => renameTask(event.target.value, selectedTask.id)} 
                             on:keydown={event => blurOnEnter(event)}
                             on:focusout={() => inputTaskName = false}
                             use:focus>
                     {:else}
-                        <div id="details-task-name" on:click={() => inputTaskName = true}>{list.tasks[selectedTask].name}</div>
+                        <div id="details-task-name" on:click={() => inputTaskName = true}>{selectedTask.name}</div>
                     {/if}
                 </div>
             </div>
