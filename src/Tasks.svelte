@@ -76,12 +76,6 @@
         }
     }
 
-    function taskBlurOnEnter(event) {
-        if (event.keyCode === 13) {
-            inputTaskName = false;
-        }
-    }
-
     // create task if enter was pressed
     function createOnEnter(event) {
         if (event.keyCode === 13) {
@@ -205,7 +199,7 @@
                         value={tasks[selectedTask].name}
                         placeholder="Enter task name..."
                         on:change={event => renameTask(event.target.value, tasks[selectedTask].id)} 
-                        on:keydown={event => taskBlurOnEnter(event)}
+                        on:keydown={event => blurOnEnter(event)}
                         on:focusout={() => inputTaskName = false}
                         use:focus>
                 {:else}
