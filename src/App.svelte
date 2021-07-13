@@ -18,6 +18,7 @@
 	let selected = Home;
 	let selectedListIndex = 0;
 	let lists = [];
+	let tasks = [];
 	$: selectedList = lists[selectedListIndex];
 
 	// create listener for list changes
@@ -51,7 +52,7 @@
 									if (index === selectedListIndex) {
 										selectedList = lists[selectedListIndex];
 									}
-									console.log("Tasks updated: ", lists[index].id);
+									console.log("Tasks updated for list with id: ", lists[index].id);
 								})
 						}
 					}
@@ -60,6 +61,19 @@
 				updateIndicatorStyle();
 				console.log("Lists updated: ", lists);
 			});
+	}
+
+	function loadTasks() {
+		db.collection("tasks")
+			.where("list_id", "==", "")
+			.orderBy("created")
+			.onSnapshot((snapshot) => {
+				tasks = snapshot.docs.map((doc) => ({
+					id: doc.id,
+					...doc.data(),
+				}));
+				console.log("Tasks updated");
+			})
 	}
 
 	// create a new list
@@ -91,6 +105,16 @@
 			.then((docRef) => {
 				console.log("List deleted with id: ", id);
 			});
+		db.collection("tasks")
+			.where("list_id", "==", id)
+			.get()
+			.then((query) => {
+				let batch = db.batch();
+				query.forEach((doc) => {
+					batch.delete(doc.ref);
+				});
+				return batch.commit();
+			})
     }
 	
 	// select a list
@@ -119,6 +143,7 @@
 					}
 				});
 			loadLists();
+			loadTasks();
 		}
 	});
 
@@ -404,6 +429,7 @@
 			this={selected}
 			list={selectedList}
 			listIndex={selectedListIndex}
+			tasks={tasks}
 			username={user.displayName}
 			userId={user.uid}
 			on:deleteList={(event) => deleteList(event.detail.index)}

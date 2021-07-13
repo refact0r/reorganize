@@ -14,18 +14,16 @@
     
     // initialize variables
     let listName = list.name;
-    let prevTaskName = listName;
+    let prevListName = listName;
     let taskName = "";
     let selectedTask;
     let selectedTaskId;
     let inputTaskName = false;
 
-    $: console.log(inputTaskName);
-
     // only change name when list.name is different
-    $: if (list.name != prevTaskName) {
+    $: if (list.name != prevListName) {
         listName = list.name;
-        prevTaskName = listName;
+        prevListName = listName;
     }
 
     $: if (selectedTask != null) {
