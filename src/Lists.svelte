@@ -3,6 +3,7 @@
 	import { fade } from 'svelte/transition';
 	import firebase from 'firebase/app';
     import { db } from './firebase';
+    import { createTask } from './tasks';
 
     // event dispatcher
     const dispatch = createEventDispatcher();
@@ -57,23 +58,6 @@
                 });
         } else {
             document.getElementById("page-title").value = list.name;
-        }
-    }
-
-    // create a task
-    function createTask() {
-        if (taskName) {
-            db.collection("tasks")
-                .add({
-                    uid: userId,
-                    list_id: list.id,
-                    name: taskName,
-                    completed: false,
-                    created: firebase.firestore.FieldValue.serverTimestamp()
-                }).then((docRef) => {
-                    console.log("Task created with id: ", docRef.id);
-                });
-            taskName = "";
         }
     }
 
@@ -132,16 +116,10 @@
         }
     }
 
-    function taskBlurOnEnter(event) {
-        if (event.keyCode === 13) {
-            inputTaskName = false;
-        }
-    }
-
     // create task if enter was pressed
     function createOnEnter(event) {
         if (event.keyCode === 13) {
-            createTask();
+            createTask(userId, taskName);
         }
     }
 
@@ -256,7 +234,7 @@
         </div>
 
         <div id="new-task-container" class="glass-bg">
-            <button id="new-task-button" class="button inside icon" on:click={() => createTask()}><i class="bi bi-plus"></i></button>            
+            <button id="new-task-button" class="button inside icon" on:click={() => createTask(userId, taskName), taskName = ""}><i class="bi bi-plus"></i></button>            
             <input id="new-task-input"
                 bind:value={taskName}
                 placeholder="Enter task name..."
